@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:gofriendsgo/model/chat_models/create_chat_model.dart';
 import 'package:gofriendsgo/model/chat_models/send_message_response_model.dart';
 import 'package:gofriendsgo/services/api/app_apis.dart';
-import 'package:gofriendsgo/services/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class ChatServiceAPI {

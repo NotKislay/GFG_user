@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gofriendsgo/utils/color_theme/colors.dart';
@@ -135,10 +133,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         size: 0.03,
                       ),
                       leading:
-                          fetchImageFromServices(chatListModel.serviceId) ==
-                                  null
-                              ? Image.asset(AppImages.goFriendsGoLogoMini)
-                              : ClipOval(
+                          ClipOval(
                                   child: image.toLowerCase().endsWith('.svg')
                                       ? SvgPicture.network(
                                           height: 40,

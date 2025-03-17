@@ -42,12 +42,14 @@ class CreateChatViewModel extends ChangeNotifier {
   bool doesFileExists = false;
   String? dateToFloat;
   final List<String> dates = [];
+  List<int> indexFound = [];
 
 //temp
   bool isSearchTapped = false;
 
   void updateSearch(bool newValue) {
     isSearchTapped = newValue;
+    log("IZZ: $isSearchTapped");
     notifyListeners();
   }
 
@@ -423,16 +425,14 @@ class CreateChatViewModel extends ChangeNotifier {
   Function(List<int>)? messageFound;
 
   void searchAndScroll(String searchKey) {
-    final List<int> indexFound = [];
-
     log("Searching $searchKey ...............");
     //_messages.indexWhere((message) => message.body!.contains(searchKey));
-    messages.asMap().forEach((index, mes) {
-      if (mes.body!.contains(searchKey)) {
+    _messages.asMap().forEach((index, mes) {
+      if (mes.type != TextStrings.fakeDate && mes.body!.contains(searchKey)) {
         final rawMessage = mes.body?.split(' ');
         rawMessage?.forEach((text) {
-          if (text == searchKey && !indexFound.contains(index)) {
-            log("Add this message with index : $index");
+          if (text.contains(searchKey) && !indexFound.contains(index)) {
+            log("Add this message=${mes.body} with index : $index");
             indexFound.add(index);
           }
         });
@@ -452,9 +452,9 @@ class CreateChatViewModel extends ChangeNotifier {
     itemPositionsListener.itemPositions.addListener(() {
       final positions = itemPositionsListener.itemPositions.value;
       if (positions.isNotEmpty && dates.isNotEmpty) {
-        final lastVisibleIndex = positions.last.index;
-        final firstVisibleIndex = positions.first.index;
-        log("THIS: ${_messages[firstVisibleIndex].body} : ${_messages[firstVisibleIndex].type} and ${_messages[lastVisibleIndex].body} : ${_messages[lastVisibleIndex].type}");
+        // final lastVisibleIndex = positions.last.index;
+        // final firstVisibleIndex = positions.first.index;
+        //log("THIS: ${_messages[firstVisibleIndex].body} : ${_messages[firstVisibleIndex].type} and ${_messages[lastVisibleIndex].body} : ${_messages[lastVisibleIndex].type}");
         /*if ((firstVisibleIndex >= 1 || lastVisibleIndex >= 0) &&
             (firstVisibleIndex <= 4 || lastVisibleIndex <= 4)) {
           dateToFloat = null;
@@ -463,7 +463,7 @@ class CreateChatViewModel extends ChangeNotifier {
         final visibleMessages = positions.map((pos) {
           return _messages[pos.index];
         });
-        log("VSISIS: ${visibleMessages.first.body}");
+        //log("VSISIS: ${visibleMessages.first.body}");
         if (visibleMessages.first.body!.isEmpty) {
           dateToFloat = null;
           return;

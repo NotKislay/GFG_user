@@ -6,7 +6,6 @@ import 'package:gofriendsgo/services/chats/get_chat_list_service.dart';
 import 'package:gofriendsgo/services/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../model/chat_models/fetch_messages_model.dart';
-import '../../services/api/app_apis.dart';
 
 class ChatListViewmodel extends ChangeNotifier {
   final ChatServices _service = ChatServices();

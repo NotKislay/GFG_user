@@ -41,10 +41,10 @@ class _HomeCarosualWidgetState extends State<HomeCarosualWidget> {
     _autoScrollTimer =
         Timer.periodic(const Duration(seconds: 3), (Timer timer) {
       if (_currentPage <
-          Provider.of<CarousalViewModel>(context, listen: false)
-                  .carouselsModel!
-                  .data
-                  .length -
+          (Provider.of<CarousalViewModel>(context, listen: false)
+                  .carouselsModel
+                  ?.data
+                  .length ?? 0)-
               1) {
         _currentPage++;
       } else {

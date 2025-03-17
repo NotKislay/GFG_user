@@ -48,6 +48,10 @@ class _ChatScreenState extends State<ChatScreen> {
   final localBUCK = TextEditingController();
   static GlobalKey<FormState> searchKey = GlobalKey<FormState>();
 
+  final _scrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener =
+      ItemPositionsListener.create();
+
   late FocusNode searchFocusNode;
 
   @override
@@ -68,17 +72,18 @@ class _ChatScreenState extends State<ChatScreen> {
     chatVM.messageFound = (indexList) {
       searchedIndexes = indexList;
       highlightedIndex = indexList.last;
+      log("SDIFT TO INDEX: $highlightedIndex");
       if (highlightedIndex == -1) return;
       chatVM.scrollController.jumpTo(index: highlightedIndex);
-      chatVM.scrollController.scrollTo(
-        index: highlightedIndex,
+      /* _scrollController.scrollTo(
+        index: highlightedIndex * 50,
         duration: Duration(
             milliseconds:
                 1), /*duration: Duration(milliseconds: 1), curve: Curves.linear*/
-      );
+      ); */
     };
 
-    //chatVM.observeChatScrolling();
+    chatVM.observeChatScrolling();
     chatVM.observeDateScrolling();
   }
 
@@ -101,9 +106,9 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _scrollToBottom() async {
-    if (chatVM.scrollController.isAttached) {
+    if (_scrollController.isAttached) {
       if (chatVM.messages.length - 1 < 0) return;
-      chatVM.scrollController.scrollTo(
+      _scrollController.scrollTo(
         index: chatVM.messages.length - 1,
         duration: const Duration(milliseconds: 1),
         curve: Curves.easeOut,
@@ -124,7 +129,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
     chatVM.resetOnClose();
     searchFocusNode.dispose();
-    //chatVM.scrollController.dispose();
+    //_scrollController.dispose();
     super.dispose();
   }
 
@@ -137,6 +142,40 @@ class _ChatScreenState extends State<ChatScreen> {
           title: widget.chatData.name,
           leading: Icon(Icons.arrow_back),
           chatVM: chatVM,
+          onMoveUp: () {
+            if (highlightedIndex - 1 >= 0) {
+              int prev = searchedIndexes.indexOf(highlightedIndex);
+              highlightedIndex -= 1;
+              prev--;
+              if (mounted && prev >= 0) {
+                highlightedIndex = searchedIndexes[prev];
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  chatVM.scrollController.jumpTo(index: highlightedIndex);
+                  /* _scrollController.scrollTo(
+                    index: highlightedIndex * 50,
+                    duration: Duration(
+                        milliseconds:
+                            1), /*duration: Duration(milliseconds: 1), curve: Curves.linear*/
+                  ); */
+                });
+              }
+            } else {
+              _showErrorSnackBar("No messages found");
+            }
+          },
+          onMoveDown: () {
+            int next = searchedIndexes.indexOf(highlightedIndex);
+            next++;
+            log("New next: $next");
+            if (mounted && next < searchedIndexes.length) {
+              highlightedIndex = searchedIndexes[next];
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                chatVM.scrollController.jumpTo(index: highlightedIndex);
+              });
+            } else {
+              _showErrorSnackBar("No messages found");
+            }
+          },
         ),
         body: Stack(
           children: [
@@ -467,7 +506,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _buildOutgoingMessage(String name, String message, String time,
       MessageAttachment? attachment, bool? isSearchedMessage) {
-    //log("Rebuild alert in outgoing");
+    if (isSearchedMessage != null && isSearchedMessage) {
+      log("Rebuild alert in outgoing $isSearchedMessage and ${message}");
+    }
     final parsedMessage = chatVM.decodeHtmlEntities(message);
     return Column(children: [
       Align(
@@ -523,10 +564,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                   text: '$mesg ',
                                   style: TextStyle(
                                     height: 1.5,
-                                    backgroundColor:
-                                        chatVM.searchController.text == mesg
-                                            ? Color(0xc8ffef00).withOpacity(0.6)
-                                            : Colors.transparent,
+                                    backgroundColor: chatVM
+                                            .searchController.text
+                                            .contains(mesg)
+                                        ? Color(0xc8ffef00).withOpacity(0.6)
+                                        : Colors.transparent,
                                     fontSize: 17,
                                     color: Colors.white,
                                   ),
