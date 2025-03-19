@@ -19,7 +19,6 @@ class PreviewAttachment extends StatelessWidget {
 
   final TextEditingController _messageController = TextEditingController();
 
-
   //PREVIEW ATTACHMENT BEFORE SENDING
   @override
   Widget build(BuildContext context) {
@@ -151,7 +150,7 @@ class PreviewAttachment extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         Image.asset(
-          fileName.getAttachmentImage(),
+          fileName.getAttachmentTypeImage(),
           width: 200,
           height: 200,
         ),

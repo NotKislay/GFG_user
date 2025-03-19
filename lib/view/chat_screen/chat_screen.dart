@@ -72,7 +72,6 @@ class _ChatScreenState extends State<ChatScreen> {
     chatVM.messageFound = (indexList) {
       searchedIndexes = indexList;
       highlightedIndex = indexList.last;
-      log("SDIFT TO INDEX: $highlightedIndex");
       if (highlightedIndex == -1) return;
       chatVM.scrollController.jumpTo(index: highlightedIndex);
       /* _scrollController.scrollTo(
@@ -106,9 +105,9 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _scrollToBottom() async {
-    if (_scrollController.isAttached) {
+    if (chatVM.scrollController.isAttached) {
       if (chatVM.messages.length - 1 < 0) return;
-      _scrollController.scrollTo(
+      chatVM.scrollController.scrollTo(
         index: chatVM.messages.length - 1,
         duration: const Duration(milliseconds: 1),
         curve: Curves.easeOut,
@@ -135,38 +134,38 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    log("BOTTM STATUS: ${chatVM.isAtBottom}");
     return Scaffold(
         appBar: CustomAppBar(
           image: widget.image,
           title: widget.chatData.name,
           leading: Icon(Icons.arrow_back),
           chatVM: chatVM,
+          onSearchClicked: () {
+            showMessageField.value = !showMessageField.value;
+          },
           onMoveUp: () {
-            if (highlightedIndex - 1 >= 0) {
-              int prev = searchedIndexes.indexOf(highlightedIndex);
-              highlightedIndex -= 1;
-              prev--;
-              if (mounted && prev >= 0) {
-                highlightedIndex = searchedIndexes[prev];
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  chatVM.scrollController.jumpTo(index: highlightedIndex);
-                  /* _scrollController.scrollTo(
+            int prev = searchedIndexes.indexOf(highlightedIndex);
+            //log("New prev: $prev and full $searchedIndexes");
+            if (mounted && prev > 0) {
+              highlightedIndex = searchedIndexes[--prev];
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                chatVM.scrollController.jumpTo(index: highlightedIndex);
+                /* _scrollController.scrollTo(
                     index: highlightedIndex * 50,
                     duration: Duration(
                         milliseconds:
                             1), /*duration: Duration(milliseconds: 1), curve: Curves.linear*/
                   ); */
-                });
-              }
+              });
             } else {
               _showErrorSnackBar("No messages found");
             }
+            if (prev > 0) prev--;
           },
           onMoveDown: () {
             int next = searchedIndexes.indexOf(highlightedIndex);
             next++;
-            log("New next: $next");
+            //log("New next: $next and full $searchedIndexes");
             if (mounted && next < searchedIndexes.length) {
               highlightedIndex = searchedIndexes[next];
               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -322,6 +321,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ValueListenableBuilder(
                     valueListenable: showMessageField,
                     builder: (context, value, child) {
+                      log("Message visi: $value");
                       return Visibility(
                           visible: value,
                           child: _buildMessageInput(context, (message) {
@@ -356,22 +356,26 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ));
             }),
-            !chatVM.isAtBottom
-                ? Positioned(
-                    right: 15,
-                    bottom: 100,
-                    child: MaterialButton(
-                      elevation: 20,
-                      color: Colors.white,
-                      onPressed: () {
-                        _scrollToBottom();
-                      },
-                      shape: CircleBorder(),
-                      child:
-                          const Icon(Icons.keyboard_double_arrow_down_rounded),
-                    ),
-                  )
-                : SizedBox()
+            ValueListenableBuilder(
+                valueListenable: chatVM.isAtBottom,
+                builder: (context, isBelow, child) {
+                  return !isBelow
+                      ? Positioned(
+                          right: 15,
+                          bottom: 100,
+                          child: MaterialButton(
+                            elevation: 20,
+                            color: Colors.white,
+                            onPressed: () {
+                              _scrollToBottom();
+                            },
+                            shape: CircleBorder(),
+                            child: const Icon(
+                                Icons.keyboard_double_arrow_down_rounded),
+                          ),
+                        )
+                      : SizedBox();
+                })
           ],
         ));
   }
@@ -564,11 +568,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                   text: '$mesg ',
                                   style: TextStyle(
                                     height: 1.5,
-                                    backgroundColor: chatVM
-                                            .searchController.text
-                                            .contains(mesg)
-                                        ? Color(0xc8ffef00).withOpacity(0.6)
-                                        : Colors.transparent,
+                                    backgroundColor:
+                                        chatVM.searchController.text == mesg
+                                            ? Color(0xc8ffef00).withOpacity(0.6)
+                                            : Colors.transparent,
                                     fontSize: 17,
                                     color: Colors.white,
                                   ),

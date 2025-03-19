@@ -44,20 +44,11 @@ class CreateChatViewModel extends ChangeNotifier {
   final List<String> dates = [];
   List<int> indexFound = [];
 
-//temp
-  bool isSearchTapped = false;
-
-  void updateSearch(bool newValue) {
-    isSearchTapped = newValue;
-    log("IZZ: $isSearchTapped");
-    notifyListeners();
-  }
-
   //chat scrolling variables
   final ItemScrollController scrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
-  bool isAtBottom = true;
+  ValueNotifier<bool> isAtBottom = ValueNotifier(true);
 
   bool get showTyping => _showTyping;
 
@@ -431,7 +422,7 @@ class CreateChatViewModel extends ChangeNotifier {
       if (mes.type != TextStrings.fakeDate && mes.body!.contains(searchKey)) {
         final rawMessage = mes.body?.split(' ');
         rawMessage?.forEach((text) {
-          if (text.contains(searchKey) && !indexFound.contains(index)) {
+          if (text == searchKey && !indexFound.contains(index)) {
             log("Add this message=${mes.body} with index : $index");
             indexFound.add(index);
           }
@@ -506,12 +497,11 @@ class CreateChatViewModel extends ChangeNotifier {
       final positions = itemPositionsListener.itemPositions.value;
       if (positions.isNotEmpty && messages.isNotEmpty) {
         final lastVisibleIndex = positions.last.index;
-        log("LAST VIS: $lastVisibleIndex");
         final atBottom = lastVisibleIndex <=
-            messages.length - 4; //at least three messages should pass
-        isAtBottom = !atBottom;
+            _messages.length - 4; //at least three messages should pass
+        isAtBottom.value = !atBottom;
+        notifyListeners();
       }
-      notifyListeners();
     });
   }
 

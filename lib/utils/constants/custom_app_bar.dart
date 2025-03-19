@@ -15,6 +15,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final CreateChatViewModel chatVM;
   final VoidCallback onMoveUp;
   final VoidCallback onMoveDown;
+  final VoidCallback onSearchClicked;
 
   const CustomAppBar(
       {super.key,
@@ -23,6 +24,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
       required this.image,
       required this.onMoveUp,
       required this.onMoveDown,
+      required this.onSearchClicked,
       required this.chatVM});
 
   @override
@@ -35,7 +37,6 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _CustomAppBarState extends State<CustomAppBar> {
   final double barHeight = 50.0;
   ValueNotifier<bool> isSearchClicked = ValueNotifier(false);
-  ValueNotifier<bool> showMessageField = ValueNotifier(true);
 
   static GlobalKey<FormState> searchKey = GlobalKey<FormState>();
   late FocusNode searchFocusNode;
@@ -58,9 +59,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 onPressed: () {
                   if (value) {
                     isSearchClicked.value = !isSearchClicked.value;
+                    widget
+                        .onSearchClicked(); //this has to be done in order to show the message field again
                     widget.chatVM.searchController.clear();
-                    widget.chatVM.updateSearch(false);
-                    showMessageField.value = true;
                   } else {
                     PageNavigations().pop();
                   }
@@ -144,7 +145,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 return !value
                     ? IconButton(
                         onPressed: () {
-                          widget.chatVM.updateSearch(true);
+                          widget.onSearchClicked();
                           isSearchClicked.value = !isSearchClicked.value;
                         },
                         icon: Icon(
