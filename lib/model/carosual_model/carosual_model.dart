@@ -32,7 +32,7 @@ class Carousel {
   final String title;
   final String description;
   final String offers;
-  final String link;
+  final String? link;
 
   Carousel({
     required this.id,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gofriendsgo/utils/color_theme/colors.dart';
+import 'package:gofriendsgo/utils/constants/app_strings.dart';
 
 class ChatBubble extends StatelessWidget {
   final String message;
@@ -18,7 +19,7 @@ class ChatBubble extends StatelessWidget {
     var alignment =
         isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start;
 
-    if(chatType == "system"){
+    if(chatType == TextStrings.messageTypeSystem){
       alignment = CrossAxisAlignment.center;
     }
 

@@ -101,24 +101,32 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const CircularProgressIndicator();
                   }
                   final banner =
-                      bannerViewModel.bannersResponse?.data.banners[0];
-                  return GestureDetector(
-                    onTap: () {},
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(7)),
-                      child: SizedBox(
-                        height: mediaqueryheight(0.15, context),
-                        width: double.infinity,
-                        child: Image.network(
-                          APIConstants.baseImageUrl + banner!.image,
-                          fit: BoxFit.fitWidth,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.asset(AppImages.goFriendsGoLogoMini);
-                          },
+                      bannerViewModel.bannersResponse!.data.banners.isNotEmpty
+                          ? bannerViewModel.bannersResponse?.data.banners.first
+                          : null;
+
+                  if (banner != null) {
+                    return GestureDetector(
+                      onTap: () {},
+                      child: ClipRRect(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(7)),
+                        child: SizedBox(
+                          height: mediaqueryheight(0.15, context),
+                          width: double.infinity,
+                          child: Image.network(
+                            APIConstants.baseImageUrl + banner!.image,
+                            fit: BoxFit.fitWidth,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(AppImages.goFriendsGoLogoMini);
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                  );
+                    );
+                  } else {
+                    return SizedBox();
+                  }
                 }),
               ),
             ),

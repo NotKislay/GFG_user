@@ -416,9 +416,15 @@ class CreateChatViewModel extends ChangeNotifier {
   Function(List<int>)? messageFound;
 
   void searchAndScroll(String searchKey) {
-    log("Searching $searchKey ...............");
+    log("Searching $searchKey ............... and ${_messages.length}");
+    indexFound.clear();
     //_messages.indexWhere((message) => message.body!.contains(searchKey));
-    _messages.asMap().forEach((index, mes) {
+    final filteredMessages = _messages.where((mes) {
+      return mes.type != TextStrings.messageTypeSystem;
+    }).toList();
+
+    filteredMessages.asMap().forEach((index, mes) {
+      //log("mes in vm: ${mes.body}");
       if (mes.type != TextStrings.fakeDate && mes.body!.contains(searchKey)) {
         final rawMessage = mes.body?.split(' ');
         rawMessage?.forEach((text) {
@@ -431,7 +437,7 @@ class CreateChatViewModel extends ChangeNotifier {
     });
 
     if (indexFound.isNotEmpty) {
-      log("Found ${indexFound.length} occurrences");
+      log("Found ${indexFound.length} occurrences, full details $indexFound");
       messageFound!(indexFound);
     } else {
       log("No messages");

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:emoji_regex/emoji_regex.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gofriendsgo/utils/constants/chat_consts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FormattedText {
@@ -17,7 +18,7 @@ class FormattedText {
             style: TextStyle(
               fontStyle: FontStyle.italic,
               color: color,
-              fontSize: 17,
+              fontSize: ChatConstants.messageTextSize,
             ),
           ),
       RegExp(r'(?<!\S)\*([^*]+)\*'): (String text) => TextSpan(
@@ -25,7 +26,7 @@ class FormattedText {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: color,
-              fontSize: 17,
+              fontSize: ChatConstants.messageTextSize,
             ),
           ),
       RegExp(r'(?<!\S)~(.+?)~'): (String text) => TextSpan(
@@ -33,7 +34,7 @@ class FormattedText {
             style: TextStyle(
               decoration: TextDecoration.lineThrough,
               color: color,
-              fontSize: 17,
+              fontSize: ChatConstants.messageTextSize,
             ),
           ),
       RegExp(r'(https?:\/\/[^\s]+)'): (String text) => TextSpan(
@@ -41,7 +42,7 @@ class FormattedText {
             style: TextStyle(
               color: color == Colors.white ? Colors.yellow : Colors.blue,
               decoration: TextDecoration.underline,
-              fontSize: 17,
+              fontSize: ChatConstants.messageTextSize,
               fontWeight: FontWeight.bold,
             ),
             recognizer: TapGestureRecognizer()
@@ -67,7 +68,7 @@ class FormattedText {
                 style: TextStyle(
                   color: color == Colors.white ? Colors.yellow : Colors.blue,
                   decoration: TextDecoration.underline,
-                  fontSize: 17,
+                  fontSize: ChatConstants.messageTextSize,
                   fontWeight: FontWeight.bold,
                 ),
                 recognizer: TapGestureRecognizer()
@@ -92,7 +93,7 @@ class FormattedText {
             style: TextStyle(
               color: color == Colors.white ? Colors.yellow : Colors.blue,
               decoration: TextDecoration.underline,
-              fontSize: 17,
+              fontSize: ChatConstants.messageTextSize,
               fontWeight: FontWeight.bold,
             ),
             recognizer: TapGestureRecognizer()
@@ -203,7 +204,7 @@ class FormattedText {
           } else {
             spans.add(TextSpan(
               text: unmatchedText,
-              style: TextStyle(color: color, fontSize: 17),
+              style: TextStyle(color: color, fontSize: ChatConstants.messageTextSize),
             ));
           }
           startIndex += unmatchedText.length;
@@ -220,7 +221,7 @@ class FormattedText {
           } else {
             spans.add(TextSpan(
               text: singleChar,
-              style: TextStyle(color: color, fontSize: 17),
+              style: TextStyle(color: color, fontSize: ChatConstants.messageTextSize),
             ));
           }
           startIndex++;

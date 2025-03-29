@@ -78,6 +78,7 @@ class TextStrings {
   static const String latestMessageID = 'latestMessageID';
 
   static const String fakeDate = 'fakeDate';
+  static const String messageTypeSystem = 'system';
 
   //carousel linkings
   static const String linkFixedDepartures = "fixed_departure";

@@ -367,7 +367,7 @@ class _ChatScreenState extends State<CreateChatScreen> {
                         }
                         final messages = snapshot.data!;
                         final filteredMessages = messages.where((mes) {
-                          return mes.type != "system";
+                          return mes.type != TextStrings.messageTypeSystem;
                         }).toList();
 
                         return ScrollablePositionedList.builder(

@@ -42,9 +42,10 @@ class _HomeCarosualWidgetState extends State<HomeCarosualWidget> {
         Timer.periodic(const Duration(seconds: 3), (Timer timer) {
       if (_currentPage <
           (Provider.of<CarousalViewModel>(context, listen: false)
-                  .carouselsModel
-                  ?.data
-                  .length ?? 0)-
+                      .carouselsModel
+                      ?.data
+                      .length ??
+                  0) -
               1) {
         _currentPage++;
       } else {
@@ -77,7 +78,8 @@ class _HomeCarosualWidgetState extends State<HomeCarosualWidget> {
                 return const Center(child: CircularProgressIndicator());
               } else {
                 final carouselList =
-                    carosualViewModel.carouselsModel!.data.reversed.toList();
+                    carosualViewModel.carouselsModel?.data.reversed.toList() ??
+                        List.empty();
                 return PageView.builder(
                   controller: widget.adController,
                   itemCount: carouselList.length,
@@ -85,6 +87,9 @@ class _HomeCarosualWidgetState extends State<HomeCarosualWidget> {
                     final carousel = carouselList[index];
                     return GestureDetector(
                       onTap: () {
+                        if (carousel.link == null || carousel.link!.isEmpty) {
+                          return;
+                        }
                         log("${carousel.id} -> ${carousel.link}");
                         if (carousel.link == TextStrings.linkFixedDepartures) {
                           PageNavigations().push(const FixedDeparturesScreen());
