@@ -425,14 +425,14 @@ class CreateChatViewModel extends ChangeNotifier {
 
     filteredMessages.asMap().forEach((index, mes) {
       //log("mes in vm: ${mes.body}");
-      if (mes.type != TextStrings.fakeDate && mes.body!.contains(searchKey)) {
-        final rawMessage = mes.body?.split(' ');
-        rawMessage?.forEach((text) {
-          if (text == searchKey && !indexFound.contains(index)) {
-            log("Add this message=${mes.body} with index : $index");
-            indexFound.add(index);
-          }
-        });
+      if (mes.type != TextStrings.fakeDate &&
+          mes.body!.toLowerCase().split(' ').any((word) {
+            return word == searchKey.toLowerCase();
+          })) {
+        log("Add this message=${mes.body} with index : $index");
+        if (!indexFound.contains(index)) {
+          indexFound.add(index);
+        }
       }
     });
 

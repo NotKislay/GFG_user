@@ -81,7 +81,7 @@ class VisaDetail {
   int id;
   int visaId;
   String title;
-  String description;
+  String? description;
   double? price;
   DateTime createdAt;
   DateTime updatedAt;

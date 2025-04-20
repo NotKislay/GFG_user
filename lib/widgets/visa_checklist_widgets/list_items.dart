@@ -28,14 +28,12 @@ class PackagesListView extends StatelessWidget {
         itemCount: value.visaResponse!.visas.length,
         itemBuilder: (context, index) {
           final country = value.visaResponse!.visas[index];
-          final price = value.visaResponse!.visas[0].price;
           //log("PLIMSL $price");
           return Padding(
             padding: EdgeInsets.only(bottom: mediaqueryheight(0.025, context)),
             child: GestureDetector(
               onTap: () => PageNavigations().push(VisaChecklistDetailsScreen(
                 visa: country,
-                price: price!,
               )),
               child: Container(
                 width: double.infinity,

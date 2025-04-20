@@ -490,7 +490,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   style: TextStyle(
                                     height: 1.5,
                                     backgroundColor:
-                                        chatVM.searchController.text == mesg
+                                        chatVM.searchController.text.toLowerCase() == mesg.toLowerCase()
                                             ? Color(0xc8ffef00).withOpacity(0.6)
                                             : Colors.transparent,
                                     fontSize: ChatConstants.messageTextSize,
@@ -580,7 +580,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   style: TextStyle(
                                     height: 1.5,
                                     backgroundColor:
-                                        chatVM.searchController.text == mesg
+                                        chatVM.searchController.text.toLowerCase() == mesg.toLowerCase()
                                             ? Color(0xc8ffef00).withOpacity(0.6)
                                             : Colors.transparent,
                                     fontSize: ChatConstants.messageTextSize,
