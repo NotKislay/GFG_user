@@ -16,7 +16,6 @@ import 'package:gofriendsgo/view/chat_screen/utils/display_image_attachment.dart
 import 'package:gofriendsgo/view/chat_screen/utils/formatted_text.dart';
 import 'package:gofriendsgo/view_model/chats/create_chat_viewmodel.dart';
 import 'package:gofriendsgo/widgets/chat_widgets/chat_field.dart';
-import 'package:gofriendsgo/widgets/chat_widgets/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
@@ -48,11 +47,6 @@ class _ChatScreenState extends State<ChatScreen> {
   List<int> searchedIndexes = [];
 
   final localBUCK = TextEditingController();
-  static GlobalKey<FormState> searchKey = GlobalKey<FormState>();
-
-  final _scrollController = ItemScrollController();
-  final ItemPositionsListener _itemPositionsListener =
-      ItemPositionsListener.create();
 
   late FocusNode searchFocusNode;
 
@@ -260,7 +254,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         var filteredMessages = messages.where((mes) {
                           return mes.type != TextStrings.messageTypeSystem;
                         }).toList();
-                        
+
                         log("RAW list: ${filteredMessages.length}");
                         return ScrollablePositionedList.builder(
                             itemScrollController: chatVM.scrollController,
@@ -279,7 +273,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       child: Text(
                                         message.updatedAt!,
                                         style: TextStyle(
-                                            color: Colors.black, fontSize: ChatConstants.floatingDayTextSize),
+                                            color: Colors.black,
+                                            fontSize: ChatConstants
+                                                .floatingDayTextSize),
                                       ),
                                     ),
                                   ),
@@ -357,7 +353,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
                             value.dateToFloat ?? "",
-                            style: TextStyle(color: Colors.black, fontSize: ChatConstants.floatingDayTextSize),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: ChatConstants.floatingDayTextSize),
                           ),
                         ),
                       ),
@@ -489,10 +487,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                   text: '$mesg ',
                                   style: TextStyle(
                                     height: 1.5,
-                                    backgroundColor:
-                                        chatVM.searchController.text.toLowerCase() == mesg.toLowerCase()
-                                            ? Color(0xc8ffef00).withOpacity(0.6)
-                                            : Colors.transparent,
+                                    backgroundColor: chatVM
+                                                .searchController.text.trim()
+                                                .toLowerCase() ==
+                                            mesg.toLowerCase()
+                                        ? Color(0xc8ffef00).withOpacity(0.6)
+                                        : Colors.transparent,
                                     fontSize: ChatConstants.messageTextSize,
                                     color: Colors.black,
                                   ),
@@ -505,7 +505,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 5),
                           child: Text(formattedTime,
                               textAlign: TextAlign.end,
-                              style: const TextStyle(fontSize: ChatConstants.messaageTimeTextSize))),
+                              style: const TextStyle(
+                                  fontSize:
+                                      ChatConstants.messaageTimeTextSize))),
                     )
                   ],
                 ),
@@ -579,10 +581,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                   text: '$mesg ',
                                   style: TextStyle(
                                     height: 1.5,
-                                    backgroundColor:
-                                        chatVM.searchController.text.toLowerCase() == mesg.toLowerCase()
-                                            ? Color(0xc8ffef00).withOpacity(0.6)
-                                            : Colors.transparent,
+                                    backgroundColor: chatVM
+                                                .searchController.text
+                                                .trim()
+                                                .toLowerCase() ==
+                                            mesg.toLowerCase()
+                                        ? Color(0xc8ffef00).withOpacity(0.6)
+                                        : Colors.transparent,
                                     fontSize: ChatConstants.messageTextSize,
                                     color: Colors.white,
                                   ),
@@ -601,7 +606,9 @@ class _ChatScreenState extends State<ChatScreen> {
                             Text(formattedTime,
                                 textAlign: TextAlign.end,
                                 style: const TextStyle(
-                                    fontSize: ChatConstants.messaageTimeTextSize, color: Colors.white)),
+                                    fontSize:
+                                        ChatConstants.messaageTimeTextSize,
+                                    color: Colors.white)),
                             Padding(
                               padding: const EdgeInsets.only(left: 10),
                               child: SvgPicture.asset(

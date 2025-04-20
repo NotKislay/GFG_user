@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gofriendsgo/view/chat_screen/utils/get_attachment_image.dart';
 import 'package:gofriendsgo/widgets/chat_widgets/utils.dart';
-import 'package:open_filex/open_filex.dart';
 import 'package:pdfx/pdfx.dart';
 import '../../../utils/color_theme/colors.dart';
 import '../../../utils/constants/mediaquery.dart';
@@ -22,6 +21,7 @@ class PreviewAttachment extends StatelessWidget {
   //PREVIEW ATTACHMENT BEFORE SENDING
   @override
   Widget build(BuildContext context) {
+    _messageController.text = file.path.split('/').last.replaceAll('.', ' ');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,

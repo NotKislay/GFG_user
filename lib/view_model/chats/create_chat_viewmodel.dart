@@ -427,7 +427,8 @@ class CreateChatViewModel extends ChangeNotifier {
       //log("mes in vm: ${mes.body}");
       if (mes.type != TextStrings.fakeDate &&
           mes.body!.toLowerCase().split(' ').any((word) {
-            return word == searchKey.toLowerCase();
+            log("DU = ${word.toLowerCase()} and ${searchKey.toLowerCase()} and last ${word.toLowerCase() == searchKey.toLowerCase()}");
+            return word.toLowerCase() == searchKey.toLowerCase();
           })) {
         log("Add this message=${mes.body} with index : $index");
         if (!indexFound.contains(index)) {

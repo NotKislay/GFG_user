@@ -60,7 +60,7 @@ class _MessageSearchBarState extends State<MessageSearchBar> {
             focusNode: focusNode,
             onSubmitted: (searchedString) {
               log("Searched string was : $searchedString");
-              widget.chatVM.searchAndScroll(searchedString);
+              widget.chatVM.searchAndScroll(searchedString.trim());
             },
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.search,
