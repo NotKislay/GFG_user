@@ -9,9 +9,10 @@ import 'package:gofriendsgo/utils/constants/api_level.dart';
 import 'package:gofriendsgo/utils/constants/mediaquery.dart';
 import 'package:gofriendsgo/utils/constants/permission_helper.dart';
 import 'package:gofriendsgo/widgets/chat_widgets/gradient_icon.dart';
-import 'package:gofriendsgo/widgets/chat_widgets/utils.dart';
+import 'package:gofriendsgo/utils/constants/chats/utils.dart';
 import 'package:gofriendsgo/widgets/chat_widgets/voice_recorder.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../view/chat_screen/utils/preview_attachment.dart';
@@ -163,10 +164,8 @@ void showAttachmentOptions(
                       'Document',
                       const Color.fromARGB(255, 61, 18, 181),
                       () async {
-                        if (await PermissionHelper.checkPermission(
-                                permission: Permission.storage) ||
-                            await PermissionHelper.checkPermission(
-                                permission: Permission.manageExternalStorage)) {
+                        if (!context.mounted) return;
+                        try {
                           FilePickerResult? result = await FilePicker.platform
                               .pickFiles(
                                   type: FileType.custom,
@@ -176,26 +175,26 @@ void showAttachmentOptions(
                           } else {
                             for (var element in result.files) {
                               print("My file = ${element.path}");
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PreviewAttachment(
-                                    file: File(element.path.toString()),
-                                    onConfirm: (String message, File file) {
-                                      onFilePicked(element.path!, message);
-                                      Navigator.of(context).pop();
-                                    },
+                              if (context.mounted) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PreviewAttachment(
+                                      file: File(element.path.toString()),
+                                      onConfirm: (String message, File file) {
+                                        onFilePicked(element.path!, message);
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
                                   ),
-                                ),
-                              );
-                              //onFilePicked(element, "");
+                                );
+                              }
                             }
                           }
-                        } else {
-                          await PermissionHelper.requestPermission(
-                              permission: Permission.storage);
-                          await PermissionHelper.requestPermission(
-                              permission: Permission.manageExternalStorage);
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  'Unexpected error occured, failed to pick file!')));
                         }
                       },
                     ),
@@ -224,6 +223,8 @@ void showAttachmentOptions(
                           } else {
                             for (var element in result.files) {
                               print("My file = ${element.path}");
+                              if (!context.mounted) return;
+
                               Navigator.of(context).pop();
                               Navigator.push(
                                 context,
@@ -260,22 +261,20 @@ void showAttachmentOptions(
                           log("Camera not grated, asking");
                           await PermissionHelper.requestPermission(
                               permission: Permission.camera);
-                        } else if ((isAndroid && apiLevel >= 30) &&
-                            !await PermissionHelper.checkPermission(
-                                permission: Permission.manageExternalStorage)) {
-                          await PermissionHelper.requestPermission(
-                              permission: Permission.manageExternalStorage);
                         } else {
                           final picker = ImagePicker();
                           final XFile? pickedFile = await picker.pickImage(
                               source: ImageSource.camera);
-                          if (pickedFile != null) {
+                          final downloadsDir = await getDownloadsDirectory();
+                          if (pickedFile != null && downloadsDir != null) {
                             String fileName =
                                 'IMG_${DateTime.now().millisecondsSinceEpoch}.jpg';
                             String newPath =
-                                '/storage/emulated/0/Download/$fileName';
+                                '${downloadsDir.path}/$fileName';
 
                             await pickedFile.saveTo(newPath);
+                            if (!context.mounted) return;
+
                             Navigator.of(context).pop();
                             Navigator.push(
                               context,

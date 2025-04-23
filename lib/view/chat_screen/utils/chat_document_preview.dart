@@ -7,13 +7,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gofriendsgo/model/chat_models/fetch_messages_model.dart';
 import 'package:gofriendsgo/view/chat_screen/utils/get_attachment_image.dart';
 import 'package:gofriendsgo/view_model/chats/create_chat_viewmodel.dart';
-import 'package:gofriendsgo/widgets/chat_widgets/utils.dart';
+import 'package:gofriendsgo/utils/constants/chats/utils.dart';
 import 'package:image/image.dart' as img;
 import 'package:pdfx/pdfx.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../utils/constants/paths.dart';
-import '../../../utils/constants/permission_helper.dart';
 
 class ChatDocumentPreview extends StatefulWidget {
   final bool isIncoming;
@@ -242,24 +240,14 @@ class _ChatDocumentPreviewState extends State<ChatDocumentPreview> {
 
     late PdfDocument? document = null;
 
-    if (!await PermissionHelper.checkPermission(
-        permission: Permission.manageExternalStorage)) {
-      await PermissionHelper.requestPermission(permission: Permission.storage);
-      await PermissionHelper.requestPermission(
-          permission: Permission.manageExternalStorage);
-
-      if (!await PermissionHelper.checkPermission(
-          permission: Permission.manageExternalStorage)) {
-        return null;
-      }
-    } else {
+    
       final result = await doesFileExistsInDownloads(fileName);
       if (!result) {
         chatVM.doesFileExists = result;
         return null;
       }
       document = await PdfDocument.openFile(pdfDoc.path.toString());
-    }
+    
     //need to call this so that we will get the size of PDF
 
     attachment.pages =

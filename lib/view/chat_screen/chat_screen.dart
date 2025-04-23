@@ -18,6 +18,7 @@ import 'package:gofriendsgo/view_model/chats/create_chat_viewmodel.dart';
 import 'package:gofriendsgo/widgets/chat_widgets/chat_field.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -45,6 +46,7 @@ class _ChatScreenState extends State<ChatScreen> {
   ValueNotifier<bool> showMessageField = ValueNotifier(true);
   int highlightedIndex = -1;
   List<int> searchedIndexes = [];
+  late final String downloadDirPath;
 
   final localBUCK = TextEditingController();
 
@@ -53,6 +55,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     searchFocusNode = FocusNode();
+    setPath();
     chatVM = Provider.of<CreateChatViewModel>(context, listen: false);
     chatVM.chatId = widget.chatData.id;
     chatVM.initPusherAndFetchAll();
@@ -85,6 +88,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
     chatVM.observeChatScrolling();
     chatVM.observeDateScrolling();
+  }
+
+  void setPath() async {
+    final directory = await getDownloadsDirectory();
+    downloadDirPath = directory?.path ?? '';
   }
 
   void startTimer() {
@@ -468,6 +476,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               MaterialPageRoute(
                                   builder: (context) => DisplayImageAttachment(
                                         file: attachment,
+                                        directoryPath: downloadDirPath,
                                         dateTime: time,
                                         senderName: 'Support',
                                         message: parsedMessage,
@@ -488,7 +497,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                   style: TextStyle(
                                     height: 1.5,
                                     backgroundColor: chatVM
-                                                .searchController.text.trim()
+                                                .searchController.text
+                                                .trim()
                                                 .toLowerCase() ==
                                             mesg.toLowerCase()
                                         ? Color(0xc8ffef00).withOpacity(0.6)
@@ -561,6 +571,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               MaterialPageRoute(
                                   builder: (context) => DisplayImageAttachment(
                                         file: attachment,
+                                        directoryPath: downloadDirPath,
                                         dateTime: time,
                                         senderName: 'You',
                                         message: parsedMessage,

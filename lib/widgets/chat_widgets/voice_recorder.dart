@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:gofriendsgo/view_model/chats/audio_view_model.dart';
-import 'package:gofriendsgo/widgets/chat_widgets/utils.dart';
+import 'package:gofriendsgo/utils/constants/chats/utils.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/color_theme/colors.dart';

@@ -11,10 +11,11 @@ import 'package:gofriendsgo/services/chats/create_chat_service_API.dart';
 import 'package:gofriendsgo/services/chats/fetch_messages_service.dart';
 import 'package:gofriendsgo/services/chats/puhser_cu.dart';
 import 'package:gofriendsgo/utils/constants/app_strings.dart';
-import 'package:gofriendsgo/widgets/chat_widgets/utils.dart';
+import 'package:gofriendsgo/utils/constants/chats/utils.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pusher_client/pusher_client.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -290,47 +291,39 @@ class CreateChatViewModel extends ChangeNotifier {
       {required void Function() onDownloaded,
       required void Function(String) onOpenError}) async {
     try {
-      if (!await PermissionHelper.checkPermission(
-          permission: Permission.manageExternalStorage)) {
-        !await PermissionHelper.requestPermission(
-            permission: Permission.manageExternalStorage);
-        log("No Permission to open files");
-        return;
-      } else {
-        final filePath = await getFileDownloadPath(attachment.oldName!);
-        if (filePath == null) {
-          log("Can't download $fileName");
-        } else if (await doesFileExistsInDownloads(fileName: fileName)) {
-          try {
-            final result = await _openFile(filePath);
-            if (result != null) {
-              onOpenError(result);
-            }
-          } catch (e) {
-            log("Exception on opening file : $e");
+      final filePath = await getFileDownloadPath(attachment.oldName!);
+      if (filePath == null) {
+        log("Can't download $fileName");
+      } else if (await doesFileExistsInDownloads(fileName: fileName)) {
+        try {
+          final result = await _openFile(filePath);
+          if (result != null) {
+            onOpenError(result);
           }
-        } else {
-          //download the file
-          final dio = Dio();
-          log("TRYING TO DOWNLOAD");
-
-          await dio.download(
-            "${APIConstants.baseImageUrl}attachments/${attachment.newName ?? "no_image"}",
-            filePath,
-            onReceiveProgress: (received, total) async {
-              log("Received bytes: $received and total bytes: $total ");
-              if (total != -1) {
-                print(
-                    "Download Progress: ${(received / total * 100).toStringAsFixed(0)}%");
-              }
-              if (total != -1 && (received == total)) {
-                doesFileExists = await doesFileExistsInDownloads(
-                    fileName: attachment.oldName!);
-                onDownloaded();
-              }
-            },
-          );
+        } catch (e) {
+          log("Exception on opening file : $e");
         }
+      } else {
+        //download the file
+        final dio = Dio();
+        log("TRYING TO DOWNLOAD");
+
+        await dio.download(
+          "${APIConstants.baseImageUrl}attachments/${attachment.newName ?? "no_image"}",
+          filePath,
+          onReceiveProgress: (received, total) async {
+            log("Received bytes: $received and total bytes: $total ");
+            if (total != -1) {
+              print(
+                  "Download Progress: ${(received / total * 100).toStringAsFixed(0)}%");
+            }
+            if (total != -1 && (received == total)) {
+              doesFileExists = await doesFileExistsInDownloads(
+                  fileName: attachment.oldName!);
+              onDownloaded();
+            }
+          },
+        );
       }
     } catch (e) {
       log("Some error occurred while Opening/downloading the file! : $e");
@@ -341,25 +334,19 @@ class CreateChatViewModel extends ChangeNotifier {
     const types = fileOpenerAllowedExtensions;
     final extension = path.split('.')[1];
 
-    if (!await PermissionHelper.checkPermission(
-            permission: Permission.manageExternalStorage) &&
-        !await PermissionHelper.checkPermission(
-            permission: Permission.storage)) {
-      await PermissionHelper.requestPermission(permission: Permission.storage);
-      await PermissionHelper.requestPermission(
-          permission: Permission.manageExternalStorage);
-    } else {
-      try {
-        final res = await OpenFilex.open(path, type: types[extension]);
-        if (res.type != ResultType.done) {
-          return res.message;
-        } else {
-          return null;
-        }
-      } catch (e) {
-        log("Error in opening file : $e");
+    try {
+      final res = await OpenFilex.open(path, type: types[extension]);
+      log("Tried to open the file got this: ${res.message}");
+
+      if (res.type != ResultType.done) {
+        return res.message;
+      } else {
+        return null;
       }
+    } catch (e) {
+      log("Error in opening file : $e");
     }
+
     return null;
   }
 
@@ -399,7 +386,8 @@ class CreateChatViewModel extends ChangeNotifier {
 
   Future<String?> getFileDownloadPath(String fileName) async {
     try {
-      final directory = Directory('/storage/emulated/0/Download/');
+      final directory = await getDownloadsDirectory();
+      if (directory == null) return null;
       if (await directory.exists()) {
         return directory.path + fileName;
       } else {

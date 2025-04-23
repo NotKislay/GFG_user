@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gofriendsgo/view/chat_screen/utils/get_attachment_image.dart';
-import 'package:gofriendsgo/widgets/chat_widgets/utils.dart';
+import 'package:gofriendsgo/utils/constants/chats/utils.dart';
 import 'package:pdfx/pdfx.dart';
 import '../../../utils/color_theme/colors.dart';
 import '../../../utils/constants/mediaquery.dart';

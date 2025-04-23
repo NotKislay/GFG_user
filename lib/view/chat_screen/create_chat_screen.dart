@@ -27,6 +27,7 @@ import 'package:gofriendsgo/widgets/chat_widgets/chat_field.dart';
 import 'package:image/image.dart' as img;
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -57,12 +58,14 @@ class _ChatScreenState extends State<CreateChatScreen> {
   bool isSearchClicked = false;
   int highlightedIndex = -1;
   List<int> searchedIndexes = [];
+  late final String downloadDirPath;
 
   //var showTyping = false;
 
   @override
   void initState() {
     super.initState();
+    setPath();
     log("CALLED For ${widget.serviceName}");
     log("CALLED For service_id-->${widget.id}");
     chatVM = Provider.of<CreateChatViewModel>(context, listen: false);
@@ -94,6 +97,11 @@ class _ChatScreenState extends State<CreateChatScreen> {
       );
     };
     //isAtBottom();
+  }
+
+  void setPath() async {
+    final directory = await getDownloadsDirectory();
+    downloadDirPath = directory?.path ?? '';
   }
 
   void startTimer() {
@@ -547,6 +555,7 @@ class _ChatScreenState extends State<CreateChatScreen> {
                               MaterialPageRoute(
                                   builder: (context) => DisplayImageAttachment(
                                         file: attachment,
+                                        directoryPath: downloadDirPath,
                                         dateTime: time,
                                         senderName: 'Support',
                                         message: parsedMessage,
@@ -636,6 +645,7 @@ class _ChatScreenState extends State<CreateChatScreen> {
                               MaterialPageRoute(
                                   builder: (context) => DisplayImageAttachment(
                                         file: attachment,
+                                        directoryPath: downloadDirPath,
                                         dateTime: time,
                                         senderName: 'You',
                                         message: parsedMessage,
@@ -730,24 +740,13 @@ class _ChatScreenState extends State<CreateChatScreen> {
 
     late PdfDocument? document = null;
 
-    if (!await PermissionHelper.checkPermission(
-        permission: Permission.manageExternalStorage)) {
-      await PermissionHelper.requestPermission(permission: Permission.storage);
-      await PermissionHelper.requestPermission(
-          permission: Permission.manageExternalStorage);
-
-      if (!await PermissionHelper.checkPermission(
-          permission: Permission.manageExternalStorage)) {
-        return null;
-      }
-    } else {
-      final result = await doesFileExistsInDownloads(fileName);
-      if (!result) {
-        chatVM.doesFileExists = result;
-        return null;
-      }
-      document = await PdfDocument.openFile(pdfDoc.path.toString());
+    final result = await doesFileExistsInDownloads(fileName);
+    if (!result) {
+      chatVM.doesFileExists = result;
+      return null;
     }
+    document = await PdfDocument.openFile(pdfDoc.path.toString());
+
     //need to call this so that we will get the size of PDF
 
     attachment.pages = "${document?.pagesCount} pages";
