@@ -35,16 +35,16 @@ class ChatDocumentPreview extends StatefulWidget {
 class _ChatDocumentPreviewState extends State<ChatDocumentPreview> {
   late final String filename;
   final CreateChatViewModel chatVM = CreateChatViewModel();
-  var isDownloaded = false;
+  var isDownloaded = ValueNotifier(false);
 
   @override
   void initState() {
     filename = widget.attachment.oldName!;
-    isDownloaded = widget.attachment.isDownloaded == null
+    isDownloaded.value = widget.attachment.isDownloaded == null
         ? false
         : widget.attachment.isDownloaded!;
 
-    isDownloaded = widget.attachment.oldName!.doesFileExistsInDownloads();
+    isDownloaded.value = widget.attachment.oldName!.doesFileExistsInDownloads();
     super.initState();
   }
 
@@ -118,17 +118,21 @@ class _ChatDocumentPreviewState extends State<ChatDocumentPreview> {
                           ],
                         ),
                       ),
-                      Visibility(
-                          visible: !isDownloaded,
-                          child: IconButton(
-                              onPressed: () {
-                                downloadFile(widget.attachment);
-                              },
-                              icon: SvgPicture.asset(
-                                AppImages.iconDownloadRound,
-                                width: 40,
-                                height: 40,
-                              )))
+                      ValueListenableBuilder(
+                          valueListenable: isDownloaded,
+                          builder: (context, value, child) {
+                            return Visibility(
+                                visible: !value,
+                                child: IconButton(
+                                    onPressed: () {
+                                      downloadFile(widget.attachment);
+                                    },
+                                    icon: SvgPicture.asset(
+                                      AppImages.iconDownloadRound,
+                                      width: 40,
+                                      height: 40,
+                                    )));
+                          })
                     ],
                   ),
                 ),
@@ -240,14 +244,13 @@ class _ChatDocumentPreviewState extends State<ChatDocumentPreview> {
 
     late PdfDocument? document = null;
 
-    
-      final result = await doesFileExistsInDownloads(fileName);
-      if (!result) {
-        chatVM.doesFileExists = result;
-        return null;
-      }
-      document = await PdfDocument.openFile(pdfDoc.path.toString());
-    
+    final result = await doesFileExistsInDownloads(fileName);
+    if (!result) {
+      chatVM.doesFileExists = result;
+      return null;
+    }
+    document = await PdfDocument.openFile(pdfDoc.path.toString());
+
     //need to call this so that we will get the size of PDF
 
     attachment.pages =
@@ -299,7 +302,7 @@ class _ChatDocumentPreviewState extends State<ChatDocumentPreview> {
 
   void downloadFile(MessageAttachment attachment) {
     log("ON DOWNLOAD REQUEST for ${widget.attachment.oldName} and isAvailable: ${isDownloaded}");
-    if (isDownloaded) {
+    if (isDownloaded.value) {
       //open call
       widget.onOpen();
     } else {
@@ -323,7 +326,7 @@ class _ChatDocumentPreviewState extends State<ChatDocumentPreview> {
           );
           setState(() {
             log("HO GYA");
-            isDownloaded = true;
+            isDownloaded.value = true;
           });
         },
         onOpenError: (error) async {
