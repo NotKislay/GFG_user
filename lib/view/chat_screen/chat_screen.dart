@@ -289,10 +289,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                   ),
                                 );
                               }
-                              final date = DateTime.parse(message.updatedAt!);
+                              final date = DateTime.parse(message.createdAt!).toUtc();
+                              DateTime dateTimeIst = date.add(Duration(hours: 5, minutes: 30));
                               final attachment = message.attachment;
                               final formattedTimestamp =
-                                  DateFormat('dd-MM-yyyy hh:mm a').format(date);
+                                  DateFormat('dd-MM-yyyy hh:mm a').format(dateTimeIst);
                               if (SharedPreferencesServices.userId ==
                                   message.fromId) {
                                 //log("CASE 1: $index and $highlightedIndex");
