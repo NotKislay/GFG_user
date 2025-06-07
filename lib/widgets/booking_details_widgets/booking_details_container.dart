@@ -158,8 +158,9 @@ class DownloadPDFIcon extends StatelessWidget {
   Future<void> downloadAndOpenPdf(BuildContext context) async {
     try {
       final dio = Dio();
-      final directory = Directory(
-          '/storage/emulated/0/Download/'); // Get app-specific directory
+      final directory =
+          await getDownloadsDirectory(); // Get app-specific directory
+      if (directory == null) return;
       final filePath =
           '${directory.path}/${pdfUrl.split('/').last.split('.').first}.${pdfUrl.split('.').last}';
       // Show a loading indicator while downloading

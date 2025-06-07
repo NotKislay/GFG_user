@@ -59,9 +59,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 onPressed: () {
                   if (value) {
                     isSearchClicked.value = !isSearchClicked.value;
+                    widget.chatVM.searchController.clear();
                     widget
                         .onSearchClicked(); //this has to be done in order to show the message field again
-                    widget.chatVM.searchController.clear();
                   } else {
                     PageNavigations().pop();
                   }

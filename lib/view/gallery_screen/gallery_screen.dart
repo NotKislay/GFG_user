@@ -117,9 +117,6 @@
 //   }
 // }
 
-//Simple GridView
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -127,9 +124,10 @@ import 'package:gofriendsgo/model/chat_models/fetch_messages_model.dart';
 import 'package:gofriendsgo/services/api/app_apis.dart';
 import 'package:gofriendsgo/utils/constants/app_bar.dart';
 import 'package:gofriendsgo/utils/constants/mediaquery.dart';
-import 'package:gofriendsgo/view_model/gallery_viewmodel.dart';
-import 'package:provider/provider.dart';
 import 'package:gofriendsgo/utils/constants/paths.dart';
+import 'package:gofriendsgo/view_model/gallery_viewmodel.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../chat_screen/utils/display_image_attachment.dart';
 
@@ -141,10 +139,18 @@ class GalleryScreen extends StatefulWidget {
 }
 
 class _GalleryScreenState extends State<GalleryScreen> {
+  late final String downloadDirPath;
+
   @override
   void initState() {
     context.read<GalleryViewModel>().fetchGallery();
+    setPath();
     super.initState();
+  }
+
+  void setPath() async {
+    final directory = await getDownloadsDirectory();
+    downloadDirPath = directory?.path ?? '';
   }
 
   @override
@@ -177,11 +183,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => DisplayImageAttachment(
-                            file: attachment,
-                            dateTime: null,
-                            senderName: null,
-                            message: null,
-                          )),
+                                file: attachment,
+                                directoryPath: downloadDirPath,
+                                dateTime: null,
+                                senderName: null,
+                                message: null,
+                              )),
                     );
                   },
                   child: Container(

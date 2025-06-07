@@ -2,8 +2,10 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:gofriendsgo/model/chat_models/fetch_messages_model.dart';
+import 'package:gofriendsgo/utils/constants/chats/downloads_path.dart';
+import 'package:path_provider/path_provider.dart';
 
-import '../../utils/constants/app_strings.dart';
+import '../app_strings.dart';
 
 extension MessageFilter on List<MessageData> {
   List<MessageData> distinct() {
@@ -22,8 +24,9 @@ extension MessageFilter on List<MessageData> {
 
 extension CheckFileExistsOrNot on String {
   bool doesFileExistsInDownloads() {
-    final directory = Directory('/storage/emulated/0/Download/');
-    final path = directory.path + this;
+    final downloadsPath = DownloadsPath.path;
+    if (downloadsPath == null) return false;
+    final path = downloadsPath + this;
     final file = File(path);
     final exists = file.existsSync();
     return exists;

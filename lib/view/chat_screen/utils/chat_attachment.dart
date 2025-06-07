@@ -144,6 +144,7 @@ class _ChatAttachmentState extends State<ChatAttachment>
                               isIncoming: widget.isIncoming,
                               attachment: widget.attachment!,
                               onDownloaded: () async {
+                                widget.attachment?.isDownloaded = true;
                                 final chatVM =
                                     context.read<CreateChatViewModel>();
                                 final isDownloaded =
@@ -159,6 +160,7 @@ class _ChatAttachmentState extends State<ChatAttachment>
                                 }
                               },
                               onOpen: () {
+                                widget.attachment?.isDownloaded = true;
                                 chatVM.downloadOrOpenFile(
                                   widget.attachment!,
                                   widget.attachment!.oldName!,

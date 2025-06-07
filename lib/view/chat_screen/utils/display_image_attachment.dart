@@ -1,21 +1,18 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get_common/get_reset.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:gofriendsgo/model/chat_models/fetch_messages_model.dart';
 import 'package:gofriendsgo/utils/constants/paths.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../../../services/api/app_apis.dart';
 
 class DisplayImageAttachment extends StatelessWidget {
   final MessageAttachment file;
+  final String directoryPath;
   final String? dateTime;
   final String? senderName;
   final String? message;
@@ -23,6 +20,7 @@ class DisplayImageAttachment extends StatelessWidget {
   const DisplayImageAttachment(
       {super.key,
       required this.file,
+      required this.directoryPath,
       required this.dateTime,
       required this.senderName,
       this.message});
@@ -163,7 +161,7 @@ class DisplayImageAttachment extends StatelessWidget {
   }
 
   bool fileExits(String fileName) {
-    final file = File('/storage/emulated/0/Download/$fileName');
+    final file = File('$directoryPath/$fileName');
     return file.existsSync();
   }
 
@@ -171,7 +169,7 @@ class DisplayImageAttachment extends StatelessWidget {
       {required void Function() onDownloaded}) async {
     final dio = Dio();
     final savePath =
-        '/storage/emulated/0/Download/${file.oldName?.split('/').last}';
+        '$directoryPath/${file.oldName?.split('/').last}';
     await dio.download(
       "${APIConstants.baseImageUrl}${senderName == null ? "" : "attachments/"}${file.newName ?? "no_image"}",
       savePath,
