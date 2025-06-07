@@ -92,9 +92,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         : FontWeight.w400;
 
                     final date =
-                        DateTime.parse(chatListModel.updatedAt.toString());
+                        DateTime.parse(chatListModel.createdAt.toString())
+                            .toUtc();
+                    DateTime dateTimeIst =
+                        date.add(Duration(hours: 5, minutes: 30));
                     final formattedTimestamp =
-                        DateFormat('hh:mm a').format(date);
+                        DateFormat('hh:mm a').format(dateTimeIst);
                     return ListTile(
                       onTap: () {
                         final chatListViewmodel =
@@ -132,29 +135,27 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         fontFamily: CustomFonts.inter,
                         size: 0.03,
                       ),
-                      leading:
-                          ClipOval(
-                                  child: image.toLowerCase().endsWith('.svg')
-                                      ? SvgPicture.network(
-                                          height: 40,
-                                          width: 40,
-                                          APIConstants.baseImageUrl + image,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Image.network(
-                                          height: 40,
-                                          width: 40,
-                                          APIConstants.baseImageUrl + image,
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return const Icon(
-                                              Icons.error,
-                                              size: 40,
-                                            );
-                                          },
-                                        ),
-                                ),
+                      leading: ClipOval(
+                        child: image.toLowerCase().endsWith('.svg')
+                            ? SvgPicture.network(
+                                height: 40,
+                                width: 40,
+                                APIConstants.baseImageUrl + image,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.network(
+                                height: 40,
+                                width: 40,
+                                APIConstants.baseImageUrl + image,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(
+                                    Icons.error,
+                                    size: 40,
+                                  );
+                                },
+                              ),
+                      ),
                       trailing: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.end,
