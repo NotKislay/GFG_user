@@ -367,7 +367,7 @@ class _ChatScreenState extends State<CreateChatScreen> {
                         }
                         final messages = snapshot.data!;
                         final filteredMessages = messages.where((mes) {
-                          return mes.type != "system";
+                          return mes.type != TextStrings.messageTypeSystem;
                         }).toList();
 
                         return ScrollablePositionedList.builder(
@@ -441,21 +441,26 @@ class _ChatScreenState extends State<CreateChatScreen> {
                 }),
               ],
             ),
-            !chatVM.isAtBottom
-                ? Positioned(
-                    right: 15,
-                    bottom: 100,
-                    child: MaterialButton(
-                      color: Colors.grey,
-                      onPressed: () {
-                        _scrollToBottom();
-                      },
-                      shape: CircleBorder(),
-                      child:
-                          const Icon(Icons.keyboard_double_arrow_down_rounded),
-                    ),
-                  )
-                : SizedBox()
+            ValueListenableBuilder(
+                valueListenable: chatVM.isAtBottom,
+                builder: (context, isBelow, child) {
+                  return !isBelow
+                      ? Positioned(
+                          right: 15,
+                          bottom: 100,
+                          child: MaterialButton(
+                            elevation: 20,
+                            color: Colors.white,
+                            onPressed: () {
+                              _scrollToBottom();
+                            },
+                            shape: CircleBorder(),
+                            child: const Icon(
+                                Icons.keyboard_double_arrow_down_rounded),
+                          ),
+                        )
+                      : SizedBox();
+                })
           ],
         ));
   }

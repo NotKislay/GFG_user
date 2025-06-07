@@ -80,7 +80,7 @@ class _ChatDocumentPreviewState extends State<ChatDocumentPreview> {
                     children: [
                       // Fixed-width image
                       Image.asset(
-                        filename.getAttachmentImage(),
+                        filename.getAttachmentTypeImage(),
                         width: 40,
                         height: 40,
                       ),
@@ -262,7 +262,8 @@ class _ChatDocumentPreviewState extends State<ChatDocumentPreview> {
     }
     //need to call this so that we will get the size of PDF
 
-    attachment.pages = "${document?.pagesCount} pages";
+    attachment.pages =
+        document?.pagesCount != null ? "${document?.pagesCount} pages" : null;
     log("Pages count: ${chatVM.docAttachmentPages}");
 
     final page = await document!.getPage(1);

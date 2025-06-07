@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gofriendsgo/model/chat_models/chat_list_model.dart';
 import 'package:gofriendsgo/utils/color_theme/colors.dart';
+import 'package:gofriendsgo/utils/constants/chat_consts.dart';
 import 'package:gofriendsgo/utils/constants/custom_app_bar.dart';
 import 'package:gofriendsgo/utils/constants/mediaquery.dart';
 import 'package:gofriendsgo/utils/constants/sizedbox.dart';
@@ -15,6 +16,7 @@ import 'package:gofriendsgo/view/chat_screen/utils/display_image_attachment.dart
 import 'package:gofriendsgo/view/chat_screen/utils/formatted_text.dart';
 import 'package:gofriendsgo/view_model/chats/create_chat_viewmodel.dart';
 import 'package:gofriendsgo/widgets/chat_widgets/chat_field.dart';
+import 'package:gofriendsgo/widgets/chat_widgets/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
@@ -48,6 +50,10 @@ class _ChatScreenState extends State<ChatScreen> {
   final localBUCK = TextEditingController();
   static GlobalKey<FormState> searchKey = GlobalKey<FormState>();
 
+  final _scrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener =
+      ItemPositionsListener.create();
+
   late FocusNode searchFocusNode;
 
   @override
@@ -68,17 +74,22 @@ class _ChatScreenState extends State<ChatScreen> {
     chatVM.messageFound = (indexList) {
       searchedIndexes = indexList;
       highlightedIndex = indexList.last;
-      if (highlightedIndex == -1) return;
-      chatVM.scrollController.jumpTo(index: highlightedIndex);
+      if (highlightedIndex == -1) {
+        log("ye to null h");
+        return;
+      }
+
       chatVM.scrollController.scrollTo(
-        index: highlightedIndex,
+          index: highlightedIndex, duration: Duration(milliseconds: 1));
+      /* _scrollController.scrollTo(
+        index: highlightedIndex * 50,
         duration: Duration(
             milliseconds:
                 1), /*duration: Duration(milliseconds: 1), curve: Curves.linear*/
-      );
+      ); */
     };
 
-    //chatVM.observeChatScrolling();
+    chatVM.observeChatScrolling();
     chatVM.observeDateScrolling();
   }
 
@@ -124,19 +135,53 @@ class _ChatScreenState extends State<ChatScreen> {
     });
     chatVM.resetOnClose();
     searchFocusNode.dispose();
-    //chatVM.scrollController.dispose();
+    //_scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    log("BOTTM STATUS: ${chatVM.isAtBottom}");
     return Scaffold(
         appBar: CustomAppBar(
           image: widget.image,
           title: widget.chatData.name,
           leading: Icon(Icons.arrow_back),
           chatVM: chatVM,
+          onSearchClicked: () {
+            showMessageField.value = !showMessageField.value;
+          },
+          onMoveUp: () {
+            int prev = searchedIndexes.indexOf(highlightedIndex);
+            log("New prev: $prev and full $searchedIndexes");
+            if (mounted && prev > 0) {
+              highlightedIndex = searchedIndexes[--prev];
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                chatVM.scrollController.jumpTo(index: highlightedIndex);
+                /* _scrollController.scrollTo(
+                    index: highlightedIndex * 50,
+                    duration: Duration(
+                        milliseconds:
+                            1), /*duration: Duration(milliseconds: 1), curve: Curves.linear*/
+                  ); */
+              });
+            } else {
+              _showErrorSnackBar("No messages found");
+            }
+            if (prev > 0) prev--;
+          },
+          onMoveDown: () {
+            int next = searchedIndexes.indexOf(highlightedIndex);
+            next++;
+            log("New next: $next and full $searchedIndexes");
+            if (mounted && next < searchedIndexes.length) {
+              highlightedIndex = searchedIndexes[next];
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                chatVM.scrollController.jumpTo(index: highlightedIndex);
+              });
+            } else {
+              _showErrorSnackBar("No messages found");
+            }
+          },
         ),
         body: Stack(
           children: [
@@ -213,15 +258,15 @@ class _ChatScreenState extends State<ChatScreen> {
                         //_scrollToBottom();
                         final messages = snapshot.data!;
                         var filteredMessages = messages.where((mes) {
-                          return mes.type != "system";
+                          return mes.type != TextStrings.messageTypeSystem;
                         }).toList();
+                        
                         log("RAW list: ${filteredMessages.length}");
                         return ScrollablePositionedList.builder(
                             itemScrollController: chatVM.scrollController,
                             itemPositionsListener: chatVM.itemPositionsListener,
                             itemCount: filteredMessages.length,
                             itemBuilder: (context, index) {
-                              //log("This is the testtetttt");
                               final message = filteredMessages[index];
                               if (message.type == TextStrings.fakeDate) {
                                 return Align(
@@ -234,7 +279,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       child: Text(
                                         message.updatedAt!,
                                         style: TextStyle(
-                                            color: Colors.black, fontSize: 13),
+                                            color: Colors.black, fontSize: ChatConstants.floatingDayTextSize),
                                       ),
                                     ),
                                   ),
@@ -246,6 +291,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   DateFormat('dd-MM-yyyy hh:mm a').format(date);
                               if (SharedPreferencesServices.userId ==
                                   message.fromId) {
+                                //log("CASE 1: $index and $highlightedIndex");
                                 return _buildOutgoingMessage(
                                   message.fromId.toString(),
                                   message.body!,
@@ -283,6 +329,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ValueListenableBuilder(
                     valueListenable: showMessageField,
                     builder: (context, value, child) {
+                      log("Message visi: $value");
                       return Visibility(
                           visible: value,
                           child: _buildMessageInput(context, (message) {
@@ -310,29 +357,33 @@ class _ChatScreenState extends State<ChatScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
                             value.dateToFloat ?? "",
-                            style: TextStyle(color: Colors.black, fontSize: 13),
+                            style: TextStyle(color: Colors.black, fontSize: ChatConstants.floatingDayTextSize),
                           ),
                         ),
                       ),
                     ),
                   ));
             }),
-            !chatVM.isAtBottom
-                ? Positioned(
-                    right: 15,
-                    bottom: 100,
-                    child: MaterialButton(
-                      elevation: 20,
-                      color: Colors.white,
-                      onPressed: () {
-                        _scrollToBottom();
-                      },
-                      shape: CircleBorder(),
-                      child:
-                          const Icon(Icons.keyboard_double_arrow_down_rounded),
-                    ),
-                  )
-                : SizedBox()
+            ValueListenableBuilder(
+                valueListenable: chatVM.isAtBottom,
+                builder: (context, isBelow, child) {
+                  return !isBelow
+                      ? Positioned(
+                          right: 15,
+                          bottom: 100,
+                          child: MaterialButton(
+                            elevation: 20,
+                            color: Colors.white,
+                            onPressed: () {
+                              _scrollToBottom();
+                            },
+                            shape: CircleBorder(),
+                            child: const Icon(
+                                Icons.keyboard_double_arrow_down_rounded),
+                          ),
+                        )
+                      : SizedBox();
+                })
           ],
         ));
   }
@@ -383,6 +434,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _buildIncomingMessage(String name, String message, String time,
       MessageAttachment? attachment, bool? isSearchedMessage) {
     final parsedMessage = chatVM.decodeHtmlEntities(message);
+    //log("parsed: $parsedMessage");
     final date = DateFormat('dd-MM-yyyy hh:mm a').parse(time);
     final formattedTime = DateFormat('hh:mm a').format(date);
     return Column(children: [
@@ -438,10 +490,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                   style: TextStyle(
                                     height: 1.5,
                                     backgroundColor:
-                                        chatVM.searchController.text == mesg
+                                        chatVM.searchController.text.toLowerCase() == mesg.toLowerCase()
                                             ? Color(0xc8ffef00).withOpacity(0.6)
                                             : Colors.transparent,
-                                    fontSize: 20,
+                                    fontSize: ChatConstants.messageTextSize,
                                     color: Colors.black,
                                   ),
                                 );
@@ -453,7 +505,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 5),
                           child: Text(formattedTime,
                               textAlign: TextAlign.end,
-                              style: const TextStyle(fontSize: 10))),
+                              style: const TextStyle(fontSize: ChatConstants.messaageTimeTextSize))),
                     )
                   ],
                 ),
@@ -467,8 +519,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _buildOutgoingMessage(String name, String message, String time,
       MessageAttachment? attachment, bool? isSearchedMessage) {
-    //log("Rebuild alert in outgoing");
+    if (isSearchedMessage != null && isSearchedMessage) {
+      log("Rebuild alert in outgoing $isSearchedMessage and ${message}");
+    }
     final parsedMessage = chatVM.decodeHtmlEntities(message);
+    //log("parsed out: ${parsedMessage}");
     return Column(children: [
       Align(
         alignment: Alignment.centerRight,
@@ -519,15 +574,16 @@ class _ChatScreenState extends State<ChatScreen> {
                                 text: TextSpan(
                                     children:
                                         parsedMessage.split(' ').map((mesg) {
+                                log("Currrrrr: ${mesg}");
                                 return TextSpan(
                                   text: '$mesg ',
                                   style: TextStyle(
                                     height: 1.5,
                                     backgroundColor:
-                                        chatVM.searchController.text == mesg
+                                        chatVM.searchController.text.toLowerCase() == mesg.toLowerCase()
                                             ? Color(0xc8ffef00).withOpacity(0.6)
                                             : Colors.transparent,
-                                    fontSize: 17,
+                                    fontSize: ChatConstants.messageTextSize,
                                     color: Colors.white,
                                   ),
                                 );
@@ -545,7 +601,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             Text(formattedTime,
                                 textAlign: TextAlign.end,
                                 style: const TextStyle(
-                                    fontSize: 10, color: Colors.white)),
+                                    fontSize: ChatConstants.messaageTimeTextSize, color: Colors.white)),
                             Padding(
                               padding: const EdgeInsets.only(left: 10),
                               child: SvgPicture.asset(

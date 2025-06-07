@@ -42,20 +42,13 @@ class CreateChatViewModel extends ChangeNotifier {
   bool doesFileExists = false;
   String? dateToFloat;
   final List<String> dates = [];
-
-//temp
-  bool isSearchTapped = false;
-
-  void updateSearch(bool newValue) {
-    isSearchTapped = newValue;
-    notifyListeners();
-  }
+  List<int> indexFound = [];
 
   //chat scrolling variables
   final ItemScrollController scrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
-  bool isAtBottom = true;
+  ValueNotifier<bool> isAtBottom = ValueNotifier(true);
 
   bool get showTyping => _showTyping;
 
@@ -423,24 +416,28 @@ class CreateChatViewModel extends ChangeNotifier {
   Function(List<int>)? messageFound;
 
   void searchAndScroll(String searchKey) {
-    final List<int> indexFound = [];
-
-    log("Searching $searchKey ...............");
+    log("Searching $searchKey ............... and ${_messages.length}");
+    indexFound.clear();
     //_messages.indexWhere((message) => message.body!.contains(searchKey));
-    messages.asMap().forEach((index, mes) {
-      if (mes.body!.contains(searchKey)) {
-        final rawMessage = mes.body?.split(' ');
-        rawMessage?.forEach((text) {
-          if (text == searchKey && !indexFound.contains(index)) {
-            log("Add this message with index : $index");
-            indexFound.add(index);
-          }
-        });
+    final filteredMessages = _messages.where((mes) {
+      return mes.type != TextStrings.messageTypeSystem;
+    }).toList();
+
+    filteredMessages.asMap().forEach((index, mes) {
+      //log("mes in vm: ${mes.body}");
+      if (mes.type != TextStrings.fakeDate &&
+          mes.body!.toLowerCase().split(' ').any((word) {
+            return word == searchKey.toLowerCase();
+          })) {
+        log("Add this message=${mes.body} with index : $index");
+        if (!indexFound.contains(index)) {
+          indexFound.add(index);
+        }
       }
     });
 
     if (indexFound.isNotEmpty) {
-      log("Found ${indexFound.length} occurrences");
+      log("Found ${indexFound.length} occurrences, full details $indexFound");
       messageFound!(indexFound);
     } else {
       log("No messages");
@@ -452,9 +449,9 @@ class CreateChatViewModel extends ChangeNotifier {
     itemPositionsListener.itemPositions.addListener(() {
       final positions = itemPositionsListener.itemPositions.value;
       if (positions.isNotEmpty && dates.isNotEmpty) {
-        final lastVisibleIndex = positions.last.index;
-        final firstVisibleIndex = positions.first.index;
-        log("THIS: ${_messages[firstVisibleIndex].body} : ${_messages[firstVisibleIndex].type} and ${_messages[lastVisibleIndex].body} : ${_messages[lastVisibleIndex].type}");
+        // final lastVisibleIndex = positions.last.index;
+        // final firstVisibleIndex = positions.first.index;
+        //log("THIS: ${_messages[firstVisibleIndex].body} : ${_messages[firstVisibleIndex].type} and ${_messages[lastVisibleIndex].body} : ${_messages[lastVisibleIndex].type}");
         /*if ((firstVisibleIndex >= 1 || lastVisibleIndex >= 0) &&
             (firstVisibleIndex <= 4 || lastVisibleIndex <= 4)) {
           dateToFloat = null;
@@ -463,7 +460,7 @@ class CreateChatViewModel extends ChangeNotifier {
         final visibleMessages = positions.map((pos) {
           return _messages[pos.index];
         });
-        log("VSISIS: ${visibleMessages.first.body}");
+        //log("VSISIS: ${visibleMessages.first.body}");
         if (visibleMessages.first.body!.isEmpty) {
           dateToFloat = null;
           return;
@@ -506,12 +503,11 @@ class CreateChatViewModel extends ChangeNotifier {
       final positions = itemPositionsListener.itemPositions.value;
       if (positions.isNotEmpty && messages.isNotEmpty) {
         final lastVisibleIndex = positions.last.index;
-        log("LAST VIS: $lastVisibleIndex");
         final atBottom = lastVisibleIndex <=
-            messages.length - 4; //at least three messages should pass
-        isAtBottom = !atBottom;
+            _messages.length - 4; //at least three messages should pass
+        isAtBottom.value = !atBottom;
+        notifyListeners();
       }
-      notifyListeners();
     });
   }
 

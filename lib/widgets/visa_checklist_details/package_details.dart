@@ -18,9 +18,7 @@ class HeadingAndDetails extends StatelessWidget {
         decoration: BoxDecoration(
             border: Border.all(color: AppColors.backgroundColor, width: 1),
             borderRadius: BorderRadius.circular(8)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Container(
             decoration: const BoxDecoration(
                 color: AppColors.backgroundColor,
@@ -36,20 +34,20 @@ class HeadingAndDetails extends StatelessWidget {
               weight: FontWeight.w500,
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: mediaquerywidth(0.04, context),
-                vertical: mediaqueryheight(0.008, context)),
-            child: CustomText(
-            
-                text: visaDetail.description,
-                fontFamily: CustomFonts.roboto,
-                size: 0.036,
-                color: const Color.fromRGBO(0, 0, 0, 0.8)),
+          Visibility(
+            visible: visaDetail.description != null,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: mediaquerywidth(0.04, context),
+                  vertical: mediaqueryheight(0.008, context)),
+              child: CustomText(
+                  text: visaDetail.description ?? '',
+                  fontFamily: CustomFonts.roboto,
+                  size: 0.036,
+                  color: const Color.fromRGBO(0, 0, 0, 0.8)),
+            ),
           )
-        ])
-     
-        );
+        ]));
   }
 }
 

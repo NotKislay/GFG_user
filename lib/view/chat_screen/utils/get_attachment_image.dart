@@ -1,7 +1,7 @@
 import 'package:gofriendsgo/utils/constants/paths.dart';
 
 extension GetAttachmentImage on String {
-  String getAttachmentImage() {
+  String getAttachmentTypeImage() {
     if (endsWith('.doc')) {
       return AppImages.docAttachment;
     } else if (endsWith('.csv')) {

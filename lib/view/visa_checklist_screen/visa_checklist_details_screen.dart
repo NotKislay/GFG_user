@@ -13,9 +13,8 @@ import 'package:gofriendsgo/widgets/visa_checklist_details/package_details.dart'
 
 class VisaChecklistDetailsScreen extends StatelessWidget {
   final Visa visa; // Displaying details for a single Visa
-  final int price;
   const VisaChecklistDetailsScreen(
-      {required this.visa, super.key, required this.price});
+      {required this.visa, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +80,7 @@ class VisaChecklistDetailsScreen extends StatelessWidget {
               const CustomSizedBoxHeight(0.04),
               // Display the amount from the first detail if available
               GetDetailsAndAmount(
-                amount: visa.details.isNotEmpty ? price.toString() : null,
+                amount: visa.price.toString(),
               ),
               const CustomSizedBoxHeight(0.04),
             ],
