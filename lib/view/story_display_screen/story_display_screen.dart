@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gofriendsgo/model/story_model/story_model.dart';
-import 'package:gofriendsgo/widgets/story_view_screen/appbar.dart';
 import 'package:gofriendsgo/widgets/story_view_screen/body.dart';
 import 'package:gofriendsgo/widgets/story_view_screen/loading_indicator.dart';
 import 'package:gofriendsgo/widgets/story_view_screen/story_appbar.dart';

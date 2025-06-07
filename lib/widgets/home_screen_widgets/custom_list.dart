@@ -1,12 +1,10 @@
-import 'dart:developer';
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:gofriendsgo/widgets/home_screen_widgets/home_utils.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../model/story_model/story_model.dart';
 import '../../services/api/app_apis.dart';
-import '../../utils/constants/custom_text.dart';
 import '../../utils/constants/mediaquery.dart';
 import '../../utils/constants/paths.dart';
 import '../../utils/navigations/navigations.dart';

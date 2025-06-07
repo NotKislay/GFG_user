@@ -35,7 +35,7 @@ class BookingDetailsContainer extends StatelessWidget {
           if (value.isEmpty) {
             return const Center(
               child: CustomText(
-                  text: 'No Data Fount',
+                  text: 'No Data Found',
                   fontFamily: CustomFonts.lato,
                   size: 0.05,
                   color: AppColors.blackColor),
