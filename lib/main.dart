@@ -32,13 +32,18 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-      options: const FirebaseOptions(
-          apiKey: 'AIzaSyDWqHwl5P70lkq6rST8P2osYa9dtZxZDwI',
-          appId: '1:946335682748:android:d37ff43c2cb778e5ad40b9',
-          messagingSenderId: '946335682748',
-          projectId: 'go-friends-go'));
-
+  if (Firebase.apps.isEmpty) {
+    if (Platform.isAndroid) {
+      await Firebase.initializeApp(
+          options: const FirebaseOptions(
+              apiKey: 'AIzaSyDWqHwl5P70lkq6rST8P2osYa9dtZxZDwI',
+              appId: '1:946335682748Ò:android:d37ff43c2cb778e5ad40b9',
+              messagingSenderId: '946335682748',
+              projectId: 'go-friends-go'));
+    } else if (Platform.isIOS) {
+      await Firebase.initializeApp();
+    }
+  }
   // Lock the app to portrait mode
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
