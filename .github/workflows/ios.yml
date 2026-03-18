@@ -1,0 +1,55 @@
+name: iOS Deployment
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Check commit message
+        id: check_message
+        run: |
+          COMMIT_MSG="$(git log -1 --pretty=%B)"
+          echo "Commit message: $COMMIT_MSG"
+          if [[ "$COMMIT_MSG" == *"iOS deploy:testflight"* ]]; then
+            echo "DEPLOY_TARGET=testflight" >> $GITHUB_ENV
+          elif [[ "$COMMIT_MSG" == *"iOS deploy:prod"* ]]; then
+            echo "DEPLOY_TARGET=appstore" >> $GITHUB_ENV
+          else
+            echo "No deploy command in commit message. Skipping build."
+            exit 78  # special code: skips workflow without error
+          fi
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.4'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign
+
+      - name: Install Fastlane
+        run: sudo gem install fastlane
+
+      - name: Deploy using Fastlane
+        run: |
+          cd ios
+          bundle install || true
+          if [[ "$DEPLOY_TARGET" == "testflight" ]]; then
+            fastlane beta
+          elif [[ "$DEPLOY_TARGET" == "appstore" ]]; then
+            fastlane release
+          fi
+        env:
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+          FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
