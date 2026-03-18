@@ -253,44 +253,116 @@ void showAttachmentOptions(
                       'Camera',
                       Colors.pink,
                       () async {
-                        //camera logic
-                        final int apiLevel = await ApiLevel.get();
-                        final isAndroid = Platform.isAndroid;
-                        if (!await PermissionHelper.checkPermission(
-                            permission: Permission.camera)) {
-                          log("Camera not grated, asking");
-                          await PermissionHelper.requestPermission(
+                        try {
+                          //camera logic
+                          final int apiLevel = await ApiLevel.get();
+                          final isAndroid = Platform.isAndroid;
+                          
+                          // Request camera permission
+                          bool hasPermission = await PermissionHelper.checkPermission(
                               permission: Permission.camera);
-                        } else {
+                          
+                          if (!hasPermission) {
+                            log("Camera not granted, asking");
+                            await PermissionHelper.requestPermission(
+                                permission: Permission.camera);
+                            
+                            // Check again after requesting
+                            hasPermission = await PermissionHelper.checkPermission(
+                                permission: Permission.camera);
+                            
+                            if (!hasPermission) {
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Camera permission is required to take photos'),
+                                ),
+                              );
+                              return;
+                            }
+                          }
+                          
                           final picker = ImagePicker();
                           final XFile? pickedFile = await picker.pickImage(
                               source: ImageSource.camera);
-                          final downloadsDir = await getDownloadsDirectory();
-                          if (pickedFile != null && downloadsDir != null) {
-                            String fileName =
-                                'IMG_${DateTime.now().millisecondsSinceEpoch}.jpg';
-                            String newPath =
-                                '${downloadsDir.path}/$fileName';
-
-                            await pickedFile.saveTo(newPath);
+                          
+                          if (pickedFile == null) {
+                            log("No image captured from camera");
                             if (!context.mounted) return;
-
-                            Navigator.of(context).pop();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PreviewAttachment(
-                                  file: File(newPath),
-                                  onConfirm: (String message, File file) {
-                                    onFilePicked(newPath, message);
-                                  },
-                                ),
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('No image was captured'),
                               ),
                             );
-                            /*File savedImage =
-                                await File(pickedFile.path).copy(newPath);*/
-                            log("SAVED IMAGE IS :${newPath}");
+                            return;
                           }
+                          
+                          log("Image picked from camera: ${pickedFile.path}");
+                          
+                          // Get appropriate directory based on platform
+                          Directory saveDir;
+                          try {
+                            if (Platform.isIOS) {
+                              log("Getting iOS documents directory");
+                              saveDir = await getApplicationDocumentsDirectory();
+                              log("iOS documents directory: ${saveDir.path}");
+                            } else {
+                              log("Getting Android downloads directory");
+                              final downloadsDir = await getDownloadsDirectory();
+                              // Fallback to temporary directory if downloads not available
+                              if (downloadsDir == null) {
+                                log("Downloads directory null, using temporary");
+                                saveDir = await getTemporaryDirectory();
+                              } else {
+                                saveDir = downloadsDir;
+                              }
+                              log("Android directory: ${saveDir.path}");
+                            }
+                          } catch (dirError) {
+                            log("Error getting directory: $dirError, using temporary");
+                            saveDir = await getTemporaryDirectory();
+                          }
+                          
+                          String fileName =
+                              'IMG_${DateTime.now().millisecondsSinceEpoch}.jpg';
+                          String newPath = '${saveDir.path}/$fileName';
+                          
+                          log("Attempting to save image to: $newPath");
+                          await pickedFile.saveTo(newPath);
+                          log("Image saved successfully");
+                          
+                          // Verify file exists
+                          final savedFile = File(newPath);
+                          if (!await savedFile.exists()) {
+                            throw Exception("File was not saved properly");
+                          }
+                          
+                          if (!context.mounted) return;
+
+                          Navigator.of(context).pop();
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PreviewAttachment(
+                                file: savedFile,
+                                onConfirm: (String message, File file) {
+                                  log("Preview confirmed with message: $message");
+                                  onFilePicked(newPath, message);
+                                },
+                              ),
+                            ),
+                          );
+                          log("Preview screen completed");
+                        } catch (e, stackTrace) {
+                          log("Error capturing image from camera: $e");
+                          log("Stack trace: $stackTrace");
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Failed to capture image: ${e.toString()}'),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
                         }
                       },
                     ),

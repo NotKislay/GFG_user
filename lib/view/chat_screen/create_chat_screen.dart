@@ -15,7 +15,6 @@ import 'package:gofriendsgo/utils/color_theme/colors.dart';
 import 'package:gofriendsgo/utils/constants/custom_text.dart';
 import 'package:gofriendsgo/utils/constants/mediaquery.dart';
 import 'package:gofriendsgo/utils/constants/paths.dart';
-import 'package:gofriendsgo/utils/constants/permission_helper.dart';
 import 'package:gofriendsgo/utils/constants/sizedbox.dart';
 import 'package:gofriendsgo/utils/navigations/navigations.dart';
 import 'package:gofriendsgo/view/chat_screen/utils/chat_attachment.dart';
@@ -29,7 +28,6 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdfx/pdfx.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
