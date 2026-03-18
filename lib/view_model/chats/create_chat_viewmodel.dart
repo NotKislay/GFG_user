@@ -352,7 +352,11 @@ class CreateChatViewModel extends ChangeNotifier {
 
   Future<bool> doesFileExistsInDownloads({required String fileName}) async {
     final path = await getFileDownloadPath(fileName);
-    final file = File(path!);
+    if(path == null){
+      log("Path was null")
+;      return false;
+    }
+    final file = File(path);
     final exists = await file.exists();
     if (exists) {
       final size = file.lengthSync();
@@ -386,7 +390,13 @@ class CreateChatViewModel extends ChangeNotifier {
 
   Future<String?> getFileDownloadPath(String fileName) async {
     try {
-      final directory = await getDownloadsDirectory();
+      Directory? directory;
+      if(Platform.isAndroid){
+        directory = await getDownloadsDirectory();
+      }else if(Platform.isIOS){
+        directory = await getApplicationDocumentsDirectory();
+      }
+
       if (directory == null) return null;
       if (await directory.exists()) {
         return directory.path + fileName;
