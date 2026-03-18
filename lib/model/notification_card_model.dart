@@ -16,31 +16,31 @@ class NotificationCardModel {
 List<NotificationCardModel> notificationCardList = [
   NotificationCardModel(
     isUnread: true,
-      mainText: 'Lorem ipsum dolor sit amet, consectetur ',
+      mainText: 'Your booking has been confirmed!',
       timeText: '1m ago.',
       imageIcon: 'assets/images/Hotel icon.png',
       subText:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit dolor sit amet, consectetur adipiscing elit.  '),
+          'Great news! Your travel package booking has been successfully confirmed. Check your booking details for more information.'),
   NotificationCardModel(
     isUnread: false,
-      mainText: 'Lorem ipsum dolor sit amet, consectetur ',
-      timeText: '1m ago.',
+      mainText: 'Special offer on beach packages',
+      timeText: '2h ago.',
       imageIcon: 'assets/images/Hotel icon.png',
       subText:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit dolor sit amet, consectetur adipiscing elit.  '),
+          'Limited time offer! Get up to 30% off on selected beach destinations. Book now and save on your next vacation.'),
   NotificationCardModel(
     isUnread: false,
-      mainText: 'Lorem ipsum dolor sit amet, consectetur ',
-      timeText: '1m ago.',
+      mainText: 'Reminder: Upcoming trip next week',
+      timeText: '1d ago.',
       imageIcon: 'assets/images/Hotel icon.png',
       subText:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit dolor sit amet, consectetur adipiscing elit.  '),
+          'Your trip to your selected destination is coming up soon. Make sure you have all necessary documents ready.'),
   NotificationCardModel(
     isUnread: true,
-      mainText: 'Lorem ipsum dolor sit amet, consectetur ',
-      timeText: '1m ago.',
+      mainText: 'New message from travel expert',
+      timeText: '3h ago.',
       imageIcon: 'assets/images/Hotel icon.png',
       subText:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit dolor sit amet, consectetur adipiscing elit.  '),
+          'You have a new message from our travel expert regarding your inquiry. Tap to view and respond.'),
  
 ];

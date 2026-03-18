@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Gofriendsgo</string>
+	<string>GoFriendsGo</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>gofriendsgo</string>
+	<string>GoFriendsGo</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -45,5 +45,23 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- Privacy - Photo Library Usage Description -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>GoFriendsGo needs access to your photo library to allow you to select and share photos for your travel bookings and profile.</string>
+	<!-- Privacy - Photo Library Add Usage Description -->
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>GoFriendsGo needs permission to save photos to your library.</string>
+	<!-- Privacy - Camera Usage Description -->
+	<key>NSCameraUsageDescription</key>
+	<string>GoFriendsGo needs access to your camera to take photos for your travel bookings and profile.</string>
+	<!-- Privacy - Microphone Usage Description (for audio/video recording) -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>GoFriendsGo needs access to your microphone to record audio messages.</string>
+	<!-- Privacy - Location When In Use Usage Description -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>GoFriendsGo needs your location to show nearby travel destinations and services.</string>
+	<!-- Privacy - Contacts Usage Description -->
+	<key>NSContactsUsageDescription</key>
+	<string>GoFriendsGo needs access to your contacts to help you share travel plans with friends and family.</string>
 </dict>
 </plist>
