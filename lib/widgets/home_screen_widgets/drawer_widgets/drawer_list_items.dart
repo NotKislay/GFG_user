@@ -88,10 +88,16 @@ class DrawerListItems extends StatelessWidget {
             title: const Text(TextStrings.logout)),
         ListTile(
             onTap: () async {
-              showLogoutDialog();
+              showDeleteAccountDialog();
             },
-            leading: const Icon(Icons.delete_forever_outlined),
-            title: const Text(TextStrings.deleteAccount)),
+            leading: const Icon(
+              Icons.delete_forever_outlined,
+              color: Colors.red,
+            ),
+            title: const Text(
+              TextStrings.deleteAccount,
+              style: TextStyle(color: Colors.red),
+            )),
       ],
     );
   }
