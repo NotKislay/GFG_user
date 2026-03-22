@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "946335682748",
+    "project_id": "go-friends-go",
+    "storage_bucket": "go-friends-go.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:946335682748:android:d37ff43c2cb778e5ad40b9",
+        "android_client_info": {
+          "package_name": "com.example.gofriendsgo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWqHwl5P70lkq6rST8P2osYa9dtZxZDwI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
