@@ -8,6 +8,7 @@ import 'package:gofriendsgo/utils/navigations/navigations.dart';
 import 'package:gofriendsgo/view/login_screen/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'dart:developer';
 
 void showLogoutDialog() {
   Get.dialog(
@@ -87,6 +88,8 @@ void showDeleteAccountDialog() {
 
             final url = Uri.parse('${APIConstants.baseUrl}/account/delete');
             try {
+              // log('Delete account request: url=$url, method=DELETE');
+              // log('Delete account auth token length: ${token.length}');
               final response = await http.delete(
                 url,
                 headers: {
@@ -94,6 +97,7 @@ void showDeleteAccountDialog() {
                 },
               );
 
+              // log('Delete account response: status=${response.statusCode}, body=${response.body}');
               if (response.statusCode == 200) {
                 sharedPreferences.setString(TextStrings.authToken, "");
                 if (Get.isDialogOpen == true) {
