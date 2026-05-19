@@ -1,4 +1,4 @@
-package com.example.gofriendsgo
+package com.gofriendsgo.app
 
 import io.flutter.embedding.android.FlutterActivity
 
