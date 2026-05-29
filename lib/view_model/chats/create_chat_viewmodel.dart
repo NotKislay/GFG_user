@@ -16,14 +16,12 @@ import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:pusher_client/pusher_client.dart';
+import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../model/chat_models/fetch_messages_model.dart';
 import '../../services/api/app_apis.dart';
 import '../../services/shared_preferences.dart';
-import '../../utils/constants/permission_helper.dart';
 
 class CreateChatViewModel extends ChangeNotifier {
   final ChatServiceAPI _chatService = ChatServiceAPI();
@@ -262,7 +260,10 @@ class CreateChatViewModel extends ChangeNotifier {
     body['from_id'] = SharedPreferencesServices.userId.toString();
     body['to_id'] = chatId.toString();
     body['seen'] = true;
-    pusherService.triggerEvent(TextStrings.eventClientSeen, body);
+    pusherService.triggerEvent(
+        targetChannelName: pusherService.channelName,
+        eventName: TextStrings.eventClientSeen,
+        data: body);
   }
 
   void sendTypingEvent() {
@@ -272,10 +273,16 @@ class CreateChatViewModel extends ChangeNotifier {
     body['to_id'] = chatId.toString();
     body['typing'] = true;
 
-    pusherService.triggerEvent(TextStrings.eventClientTyp, body);
+    pusherService.triggerEvent(
+        targetChannelName: pusherService.channelName,
+        eventName: TextStrings.eventClientTyp,
+        data: body);
     Future.delayed(const Duration(milliseconds: 900), () {
       body['typing'] = false;
-      pusherService.triggerEvent(TextStrings.eventClientTyp, body);
+      pusherService.triggerEvent(
+          targetChannelName: pusherService.channelName,
+          eventName: TextStrings.eventClientTyp,
+          data: body);
     });
   }
 
