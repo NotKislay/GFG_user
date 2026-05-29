@@ -51,11 +51,13 @@ class _HomeCarosualWidgetState extends State<HomeCarosualWidget> {
       } else {
         _currentPage = 0;
       }
-      widget.adController.animateToPage(
-        _currentPage,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeIn,
-      );
+      if (widget.adController.hasClients) {
+        widget.adController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+      }
     });
   }
 

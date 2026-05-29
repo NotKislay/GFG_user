@@ -124,6 +124,7 @@ class _ChatScreenState extends State<CreateChatScreen> {
     if (chatVM.scrollController.isAttached && mounted) {
       if (chatVM.messages.length - 1 < 0) return;
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_scrollController.isAttached) return;
         _scrollController.scrollTo(
           index: chatVM.messages.length - 1,
           duration: const Duration(milliseconds: 300),
@@ -399,11 +400,14 @@ class _ChatScreenState extends State<CreateChatScreen> {
                                   ),
                                 );
                               }
-                              final date = DateTime.parse(message.createdAt!).toUtc();
-                              DateTime dateTimeIst = date.add(Duration(hours: 5, minutes: 30));
+                              final date =
+                                  DateTime.parse(message.createdAt!).toUtc();
+                              DateTime dateTimeIst =
+                                  date.add(Duration(hours: 5, minutes: 30));
                               final attachment = message.attachment;
                               final formattedTimestamp =
-                                  DateFormat('dd-MM-yyyy hh:mm a').format(dateTimeIst);
+                                  DateFormat('dd-MM-yyyy hh:mm a')
+                                      .format(dateTimeIst);
                               if (SharedPreferencesServices.userId ==
                                   message.fromId) {
                                 return _buildOutgoingMessage(

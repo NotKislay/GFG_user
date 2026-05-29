@@ -22,13 +22,17 @@ class _InternetBroadcasterState extends State<InternetBroadcaster> {
 
   @override
   void initState() {
+    super.initState();
+
     _checkInitialConnection();
-    _subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
-      final hasConnection = results.any((result) => result != ConnectivityResult.none);
+    _subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> results) {
+      if (!mounted) return;
+      final hasConnection =
+          results.any((result) => result != ConnectivityResult.none);
       _updateConnectionStatus(hasConnection);
     });
-
-    super.initState();
   }
 
   void _checkInitialConnection() async {
@@ -39,6 +43,7 @@ class _InternetBroadcasterState extends State<InternetBroadcaster> {
   }
 
   void _updateConnectionStatus(bool hasInternet) {
+    if (!mounted) return;
     setState(() {
       _isConnected = hasInternet;
     });
@@ -56,35 +61,32 @@ class _InternetBroadcasterState extends State<InternetBroadcaster> {
       body: Stack(
         children: [
           widget.child,
-          if(!_isConnected)
+          if (!_isConnected)
             Positioned.fill(
                 child: Container(
-                  decoration: const BoxDecoration(
-                      gradient: LinearGradient(colors: AppColors.gradientColors,
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter)
-                  ),
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(AppImages.offlineIcon, color: Colors.white,
-                            width: 200,
-                            height: 200),
-                        const Text("You are Offline",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            )),
-                      ],
-                    ),
-                  ),
-                )
-            )
-
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: AppColors.gradientColors,
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter)),
+              width: double.infinity,
+              height: double.infinity,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(AppImages.offlineIcon,
+                        color: Colors.white, width: 200, height: 200),
+                    const Text("You are Offline",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ],
+                ),
+              ),
+            ))
         ],
       ),
     );

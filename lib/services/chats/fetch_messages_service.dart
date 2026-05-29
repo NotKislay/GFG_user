@@ -24,7 +24,7 @@ class FetchMessagesService {
 
      return response;
     } catch (error) {
-      log('Error registering user: $error');
+      log('Error fetching messages: $error');
       return null;
     }
   }

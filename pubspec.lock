@@ -648,6 +648,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.2"
+  js:
+    dependency: transitive
+    description:
+      name: js
+      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.7"
   json_annotation:
     dependency: transitive
     description:
@@ -976,12 +984,20 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  pusher_channels_flutter:
+    dependency: "direct main"
+    description:
+      name: pusher_channels_flutter
+      sha256: "42d83a0301b52653fab6d7c3832f7abed9426ba5f0fdc4b21cdbd333c19b23be"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   pusher_client:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: f96b3b962b84c6c8b3f4080b7d070455d67adb5a
+      ref: d01d537
+      resolved-ref: d01d537f76cc994f6b1f25727ff121f902cb6761
       url: "https://github.com/NotKislay/Pusher-plugin.git"
     source: git
     version: "2.0.0"

@@ -14,22 +14,17 @@ class FamilyDetailsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-      opacity: value.onEditPressed ? 1 : .5,
-      child: CustomButton(
-        function: value.onEditPressed
-            ? () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return FamilyDetailsListing();
-                }));
-              }
-            : () {},
-        text: 'Family Details',
-        fontSize: 0.04,
-        buttonTextColor: AppColors.whiteColor,
-        borderColor: AppColors.transparentColor,
-        fontFamily: CustomFonts.poppins,
-      ),
+    return CustomButton(
+      function: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return FamilyDetailsListing();
+              }));
+            },
+      text: 'Family Details',
+      fontSize: 0.04,
+      buttonTextColor: AppColors.whiteColor,
+      borderColor: AppColors.transparentColor,
+      fontFamily: CustomFonts.poppins,
     );
   }
 }

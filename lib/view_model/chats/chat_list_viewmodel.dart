@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:gofriendsgo/model/chat_models/chat_list_model.dart';
+import 'package:gofriendsgo/services/api/app_apis.dart';
 import 'package:gofriendsgo/services/chats/get_chat_list_service.dart';
 import 'package:gofriendsgo/services/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -65,7 +66,7 @@ class ChatListViewmodel extends ChangeNotifier {
 
   Future<MessageData?> fetchLastMessagesID(
       FetchMessagesRequest fetchMessageRequest, String token) async {
-    final url = Uri.parse('{APIConstants.baseUrl}/fetchMessages');
+    final url = Uri.parse('${APIConstants.baseUrl}/fetchMessages');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
@@ -87,7 +88,7 @@ class ChatListViewmodel extends ChangeNotifier {
         throw Exception("Error in request ${response.statusCode}");
       }
     } catch (error) {
-      log('Error registering user: $error');
+      log('Error fetching last messsage: $error');
       return null;
     }
   }

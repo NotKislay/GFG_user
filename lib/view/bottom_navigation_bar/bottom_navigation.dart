@@ -15,7 +15,7 @@ class BottomNavigationScreen extends StatefulWidget {
 }
 
 class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
-  final PageController pageController = PageController();
+  final PageController pageController = PageController(initialPage: 0);
   late List<Widget> pages;
   int currentIndex = 0;
   int _selectedIndex = 0;
@@ -84,7 +84,9 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
         if (_selectedIndex != 0) {
           setState(() {
             _selectedIndex = 0;
-            pageController.jumpToPage(0);
+            if (pageController.hasClients) {
+              pageController.jumpToPage(0);
+            }
           });
           return false; // Prevent the app from closing
         } else {
@@ -123,7 +125,9 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
           onTap: (value) {
             setState(() {
               currentIndex = value;
-              pageController.jumpToPage(value);
+              if (pageController.hasClients) {
+                pageController.jumpToPage(value);
+              }
             });
           },
           items: [

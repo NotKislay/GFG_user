@@ -126,6 +126,8 @@ class CreateChatViewModel extends ChangeNotifier {
         final parsed = jsonDecode(event.data!);
         final newMessage = PusherEventModel.fromJson(parsed);
 
+        log("New event here: $newMessage");
+
         if (newMessage.message?.toId! != chatId.toString()) {
           return;
         }
@@ -352,9 +354,9 @@ class CreateChatViewModel extends ChangeNotifier {
 
   Future<bool> doesFileExistsInDownloads({required String fileName}) async {
     final path = await getFileDownloadPath(fileName);
-    if(path == null){
-      log("Path was null")
-;      return false;
+    if (path == null) {
+      log("Path was null");
+      return false;
     }
     final file = File(path);
     final exists = await file.exists();
@@ -391,9 +393,9 @@ class CreateChatViewModel extends ChangeNotifier {
   Future<String?> getFileDownloadPath(String fileName) async {
     try {
       Directory? directory;
-      if(Platform.isAndroid){
+      if (Platform.isAndroid) {
         directory = await getDownloadsDirectory();
-      }else if(Platform.isIOS){
+      } else if (Platform.isIOS) {
         directory = await getApplicationDocumentsDirectory();
       }
 
