@@ -53,16 +53,16 @@ class UserService {
       );
       print("RESPONSE ${response.statusCode}");
 
-      if(response.statusCode==400){
-        final referralResponseBody = jsonDecode(response.body) as Map<String, dynamic>;
+      if (response.statusCode == 400) {
+        final referralResponseBody =
+            jsonDecode(response.body) as Map<String, dynamic>;
 
-          Get.snackbar(
-            "Referral Error",
-            referralResponseBody['message'],
-            backgroundColor: Colors.red.shade400,
-            colorText: Colors.white,
-          );
-
+        Get.snackbar(
+          "Referral Error",
+          referralResponseBody['message'],
+          backgroundColor: Colors.red.shade400,
+          colorText: Colors.white,
+        );
       }
 
       if (response.statusCode == 200) {
@@ -86,11 +86,8 @@ class UserService {
           );
         }
 
-
-        return null;  // Stop registration for email errors
-      }
-
-      else {
+        return null; // Stop registration for email errors
+      } else {
         // Any other error
         log('Failed to register user: ${response.statusCode}');
         log('Error: ${response.body}');
@@ -101,7 +98,6 @@ class UserService {
       return null;
     }
   }
-
 
   Future<http.Response> postEmail(String email) async {
     final url = Uri.parse('${APIConstants.loginUrl}login');
@@ -164,6 +160,7 @@ class UserService {
       log('Token stored in SharedPreferences: $token');
     } else {
       final responseData = jsonDecode(response.body);
+      log('respomse: $responseData');
       Get.snackbar("validation error", responseData['error']);
       log('Failed to verify OTP: ${response.body}');
     }

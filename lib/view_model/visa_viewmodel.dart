@@ -14,17 +14,19 @@ class VisaViewModel extends ChangeNotifier {
 
   Future<void> fetchVisas() async {
     _isLoading = true;
-   
 
     try {
-      _visaResponse = await _service.fetchVisas(SharedPreferencesServices.token!);
+      _visaResponse =
+          await _service.fetchVisas(SharedPreferencesServices.token!);
       if (_visaResponse != null) {
-        log('Visas fetched successfully');
+        log('Visas fetched successfully : ${_visaResponse?.visas}');
+        _visaResponse?.visas.map((e) {
+          log(e.toJson().toString());
+        });
         if (_visaResponse!.visas.isNotEmpty) {
           log(_visaResponse!.visas[0].image);
         }
       }
-    
     } catch (e) {
       log('Error fetching visas: $e');
     } finally {

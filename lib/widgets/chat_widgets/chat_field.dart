@@ -204,10 +204,7 @@ void showAttachmentOptions(
                       'Gallery',
                       Colors.pink,
                       () async {
-                        if (await PermissionHelper.checkPermission(
-                                permission: Permission.photos) ||
-                            await PermissionHelper.checkPermission(
-                                permission: Permission.storage)) {
+                      
                           FilePickerResult? result = await FilePicker.platform
                               .pickFiles(
                                   type: FileType.custom,
@@ -239,12 +236,6 @@ void showAttachmentOptions(
                               );
                             }
                           }
-                        } else {
-                          await PermissionHelper.requestPermission(
-                              permission: Permission.photos);
-                          await PermissionHelper.requestPermission(
-                              permission: Permission.storage);
-                        }
                       },
                     ),
                     _buildGridOption(
