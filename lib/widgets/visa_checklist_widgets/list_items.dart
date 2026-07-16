@@ -53,7 +53,7 @@ class PackagesListView extends StatelessWidget {
                                 as ImageProvider)),
                 child: Center(
                   child: CustomText(
-                    text: "Visa for ${country.visaFor}",
+                    text: country.visaFor,
                     fontFamily: CustomFonts.roboto,
                     size: 0.063,
                     color: AppColors.whiteColor,
