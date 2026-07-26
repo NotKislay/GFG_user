@@ -143,7 +143,7 @@ class _ChatScreenState extends State<CreateChatScreen> {
   void dispose() {
     chatVM.messages.clear();
     chatVM.resetOnClose();
-    chatVM.setAttachedFile(null);
+    chatVM.clearAttachedFileWithoutNotify();
     //_scrollController.dispose();
     super.dispose();
   }

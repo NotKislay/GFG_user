@@ -245,9 +245,6 @@ void showAttachmentOptions(
                       Colors.pink,
                       () async {
                         try {
-                          //camera logic
-                          final int apiLevel = await ApiLevel.get();
-                          final isAndroid = Platform.isAndroid;
                           
                           // Request camera permission
                           bool hasPermission = await PermissionHelper.checkPermission(
@@ -323,7 +320,8 @@ void showAttachmentOptions(
                           log("Image saved successfully");
                           
                           // Verify file exists
-                          final savedFile = File(newPath);
+                          //final savedFile = File(newPath);
+                          final savedFile = await File(pickedFile.path).copy(newPath);
                           if (!await savedFile.exists()) {
                             throw Exception("File was not saved properly");
                           }

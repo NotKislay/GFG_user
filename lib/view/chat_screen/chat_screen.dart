@@ -133,7 +133,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     chatVM.messages.clear();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      chatVM.setAttachedFile(null);
+      chatVM.clearAttachedFileWithoutNotify();
     });
     chatVM.resetOnClose();
     searchFocusNode.dispose();
