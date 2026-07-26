@@ -69,6 +69,9 @@ class CreateChatViewModel extends ChangeNotifier {
     attachedFile = data;
     notifyListeners();
   }
+  void clearAttachedFileWithoutNotify() {
+    attachedFile = null;
+  }
 
   //pusher
   late final Function(PusherEvent?) onPusherEventReceived;
