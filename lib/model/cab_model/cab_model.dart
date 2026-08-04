@@ -53,6 +53,7 @@ class Cab {
   DateTime createdAt;
   DateTime updatedAt;
   String perKm;
+  String? city;
 
   Cab({
     required this.id,
@@ -63,6 +64,7 @@ class Cab {
     required this.createdAt,
     required this.updatedAt,
     required this.perKm,
+    this.city,
   });
 
   factory Cab.fromJson(Map<String, dynamic> json) {
@@ -74,7 +76,8 @@ class Cab {
       status: json['status'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
-      perKm: json['per_km']
+      perKm: json['per_km']?.toString() ?? '',
+      city: json['city']?.toString(),
     );
   }
 
@@ -87,7 +90,8 @@ class Cab {
       'status': status,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
-      'per_km': perKm
+      'per_km': perKm,
+      'city': city,
     };
   }
 }

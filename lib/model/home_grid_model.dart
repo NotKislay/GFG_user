@@ -14,6 +14,10 @@ class HomeGrid {
 
 List<HomeGrid> homeGridItems = [
   HomeGrid(
+      imagePath: 'assets/images/gfg_cabs.jpeg',
+      titleText: 'Quick Rides',
+      subText: /* TextStrings.homeGridFourthText */ ''),
+  HomeGrid(
       imagePath: 'assets/images/fixed_dep.png',
       titleText: 'Fixed Departure',
       subText: /* TextStrings.homeGridFirstSubText */ ''),
