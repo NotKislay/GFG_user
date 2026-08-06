@@ -1,6 +1,3 @@
-import 'package:gofriendsgo/utils/constants/app_strings.dart';
-import 'package:gofriendsgo/utils/constants/paths.dart';
-
 class HomeGrid {
   final String imagePath;
   final String titleText;

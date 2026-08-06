@@ -67,7 +67,7 @@ void main() async {
           ChangeNotifierProvider(create: (_) => StoriesViewModel()),
           ChangeNotifierProvider(create: (_) => VisaViewModel()),
           ChangeNotifierProvider(create: (_) => CabViewModel()),
-          ChangeNotifierProvider(create: (_) => GfgCabsViewmodel()),
+          ChangeNotifierProvider(create: (_) => QuickRidesViewmodel()),
           ChangeNotifierProvider(create: (_) => PassportViewModel()),
           ChangeNotifierProvider(create: (_) => ProfileViewModel()),
           ChangeNotifierProvider(create: (_) => FixedDeparturesViewModel()),
