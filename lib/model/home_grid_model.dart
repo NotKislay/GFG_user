@@ -1,6 +1,3 @@
-import 'package:gofriendsgo/utils/constants/app_strings.dart';
-import 'package:gofriendsgo/utils/constants/paths.dart';
-
 class HomeGrid {
   final String imagePath;
   final String titleText;
@@ -13,6 +10,10 @@ class HomeGrid {
 }
 
 List<HomeGrid> homeGridItems = [
+  HomeGrid(
+      imagePath: 'assets/images/gfg_cabs.jpeg',
+      titleText: 'Quick Rides',
+      subText: /* TextStrings.homeGridFourthText */ ''),
   HomeGrid(
       imagePath: 'assets/images/fixed_dep.png',
       titleText: 'Fixed Departure',

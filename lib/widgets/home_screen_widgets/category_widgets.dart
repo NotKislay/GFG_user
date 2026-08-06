@@ -7,6 +7,7 @@ import 'package:gofriendsgo/utils/constants/paths.dart';
 import 'package:gofriendsgo/utils/constants/sizedbox.dart';
 import 'package:gofriendsgo/utils/navigations/navigations.dart';
 import 'package:gofriendsgo/view/cab_rates_screen/cab_rates_screen.dart';
+import 'package:gofriendsgo/view/cab_rates_screen/gfg_cabs_screen.dart';
 import 'package:gofriendsgo/view/fixed_departures_screen/fixed_departures_screen.dart';
 import 'package:gofriendsgo/view/passport_checlist/passport_checklist_screen.dart';
 import 'package:gofriendsgo/view/visa_checklist/visa_checlist_screen.dart';
@@ -24,16 +25,18 @@ class CategoriesWidget extends StatelessWidget {
         height: mediaqueryheight(0.34, context),
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: 4,
+          itemCount: homeGridItems.length,
           itemBuilder: (context, index) {
             final item = homeGridItems[index];
             return GestureDetector(
               onTap: () {
                 if (index == 0) {
-                  PageNavigations().push(const FixedDeparturesScreen());
+                  PageNavigations().push(const GfgCabsScreen());
                 } else if (index == 1) {
-                  PageNavigations().push(const PassportChecklistScreen());
+                  PageNavigations().push(const FixedDeparturesScreen());
                 } else if (index == 2) {
+                  PageNavigations().push(const PassportChecklistScreen());
+                } else if (index == 3) {
                   PageNavigations().push(const VisaChecklistScreen());
                 } else {
                   PageNavigations().push(const CabRatesScreen());

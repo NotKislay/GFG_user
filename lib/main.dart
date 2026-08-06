@@ -20,6 +20,7 @@ import 'package:gofriendsgo/view_model/departure_viewmodel.dart';
 import 'package:gofriendsgo/view_model/family_viewmodel.dart';
 import 'package:gofriendsgo/view_model/filter_passports_viewmodel.dart';
 import 'package:gofriendsgo/view_model/gallery_viewmodel.dart';
+import 'package:gofriendsgo/view_model/gfg_cabs_viewmodel.dart';
 import 'package:gofriendsgo/view_model/passport_viewmodel.dart';
 import 'package:gofriendsgo/view_model/profile_viewmodel.dart';
 import 'package:gofriendsgo/view_model/sales_exe_viewmodel.dart';
@@ -66,6 +67,7 @@ void main() async {
           ChangeNotifierProvider(create: (_) => StoriesViewModel()),
           ChangeNotifierProvider(create: (_) => VisaViewModel()),
           ChangeNotifierProvider(create: (_) => CabViewModel()),
+          ChangeNotifierProvider(create: (_) => QuickRidesViewmodel()),
           ChangeNotifierProvider(create: (_) => PassportViewModel()),
           ChangeNotifierProvider(create: (_) => ProfileViewModel()),
           ChangeNotifierProvider(create: (_) => FixedDeparturesViewModel()),
